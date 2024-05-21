@@ -12,6 +12,5 @@ public class UserEntity {
     @Length(max = 50)
     private String accountId;
 
-    @Length(max = 16)
     private String password;
 }
