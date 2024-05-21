@@ -1,7 +1,8 @@
-FROM openjdk:11-jre-slim
+FROM openjdk:17-jdk-alpine
 
-WORKDIR /app
+COPY ./target/asee-0.0.1-SNAPSHOT.jar app.jar
 
-COPY ./target/classes/asee/asee/PraksaAseeApplication.class app.jar
+EXPOSE 8000
+EXPOSE 5432
 
 CMD ["java", "-jar", "app.jar"]
