@@ -4,18 +4,23 @@ import asee.asee.administration.models.UserEntity;
 import asee.asee.administration.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Random;
 
 @Service
 public class UserService {
 
+    private PasswordEncoder passwordEncoder;
+
     private IUserRepository userRepository;
+
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
 
     @Autowired
-    public UserService(IUserRepository userRepository){
+    public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public boolean CheckIfUserExists(String accountId){
@@ -38,15 +43,17 @@ public class UserService {
         return password.toString();
     }
 
-    public void addNewUser(String accountId, String password) throws RuntimeException {
-        try {
-            UserEntity user = new UserEntity();
-            user.setAccountId(accountId);
-            user.setPassword(password);
+    public void addNewUser(UserEntity user) {
+        userRepository.save(user);
+    }
 
-            userRepository.save(user);
-        }catch (Exception e) {
-            throw new RuntimeException("Failed to add new user: " + e.getMessage(), e);
-        }
+    public String encryptPassword(String password) {
+        return passwordEncoder.encode(password);
+    }
+
+    public boolean isCorrectPassword(String accountId, String password) {
+        UserEntity user = userRepository.findById(accountId).orElseThrow();
+
+        return passwordEncoder.matches(password, user.getPassword());
     }
 }
