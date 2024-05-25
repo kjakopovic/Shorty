@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: Praksa
+    volumes:
+      - ./src/main/resources/db:/docker-entrypoint-initdb.d
+
+  app:
+    image: shorty-image
+    container_name: shorty
+    depends_on:
+      - db
+    ports:
+      - "80:8000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/Praksa
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
