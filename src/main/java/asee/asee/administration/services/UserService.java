@@ -23,7 +23,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean CheckIfUserExists(String accountId){
+    public boolean checkIfUserExists(String accountId){
         return userRepository.existsById(accountId);
     }
 
