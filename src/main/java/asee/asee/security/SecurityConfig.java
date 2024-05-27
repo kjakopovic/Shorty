@@ -35,9 +35,8 @@ public class SecurityConfig {
                         .requestMatchers("/administration/register").permitAll()
                         .requestMatchers("/administration/login").permitAll()
                         //TODO: development purposes
-                        .requestMatchers("/swagger-ui/index.html").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/api-docs").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults());

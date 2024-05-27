@@ -9,9 +9,6 @@ import org.hibernate.validator.constraints.Length;
 @Data
 public class Shorty {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-
     @Length(max = 200)
     private String originalUrl;
 

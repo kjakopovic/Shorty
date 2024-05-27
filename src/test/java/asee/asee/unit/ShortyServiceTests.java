@@ -60,7 +60,6 @@ public class ShortyServiceTests {
         Shorty shorty = new Shorty();
         shorty.setTimesUsed(10);
         shorty.setHashedUrl("HashedUrl");
-        shorty.setId(1);
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(301);
 
@@ -116,7 +115,6 @@ public class ShortyServiceTests {
         //Arrange
         Shorty shorty = new Shorty();
         shorty.setHashedUrl("HashedUrl");
-        shorty.setId(1);
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(301);
         shorty.setTimesUsed(10);

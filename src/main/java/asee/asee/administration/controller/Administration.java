@@ -93,7 +93,7 @@ public class Administration {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response.setDescription(e.getMessage());
+            response.setDescription("Došlo je do pogreške: " + e.getMessage());
 
             return ResponseEntity.badRequest().body(response);
         }

@@ -5,8 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface IShortyRepository extends JpaRepository<Shorty, Integer> {
-    boolean existsByOriginalUrl(String url);
+public interface IShortyRepository extends JpaRepository<Shorty, String> {
     Optional<Shorty> findByOriginalUrlAndRedirectionType(String url, int redirectionType);
     Optional<Shorty> findByHashedUrl(String hashedUrl);
 }

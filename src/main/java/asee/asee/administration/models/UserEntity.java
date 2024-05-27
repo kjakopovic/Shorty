@@ -20,7 +20,7 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_shorties",
             joinColumns = @JoinColumn(name = "user_account_id", referencedColumnName = "accountId"),
-            inverseJoinColumns = @JoinColumn(name = "shorty_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "shorty_id", referencedColumnName = "originalUrl")
     )
     private List<Shorty> shortedUrls = new ArrayList<>();
 }
