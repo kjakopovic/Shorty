@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 @Service
@@ -51,8 +52,14 @@ public class UserService {
         return passwordEncoder.encode(password);
     }
 
-    public boolean isCorrectPassword(String accountId, String password) {
-        UserEntity user = userRepository.findById(accountId).orElseThrow();
+    public boolean isCorrectCredentials(String accountId, String password) {
+        UserEntity user;
+
+        try {
+            user = userRepository.findById(accountId).orElseThrow();
+        }catch (NoSuchElementException e){
+            return false;
+        }
 
         return passwordEncoder.matches(password, user.getPassword());
     }
