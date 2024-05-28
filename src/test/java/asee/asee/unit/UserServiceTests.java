@@ -6,13 +6,17 @@ import asee.asee.administration.services.UserService;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -97,5 +101,54 @@ public class UserServiceTests {
 
         //Assert
         Assertions.assertFalse(result);
+    }
+
+    @Test
+    public void encryptPassword_encodes_correctly(){
+        //Arrange
+        String password = "ojgisfsd";
+
+        //Act
+        String result = userService.encryptPassword(password);
+
+        //Assert
+        Assertions.assertNotEquals(password, result);
+    }
+
+    @Test
+    public void addNewUser_saves_user(){
+        //Arrange
+        String accountId = "Karlo";
+        String password = "ojgisfsd";
+
+        UserEntity user = new UserEntity();
+        user.setAccountId(accountId);
+        user.setPassword(password);
+
+        //Act
+        userService.addNewUser(user);
+
+        //Assert
+        Mockito.verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    public void generateRandomPassword_generatesPassword_of_length15(){
+
+        //Arrange
+        String accountId = "Karlo";
+        String password = "ojgisfsd";
+
+        UserEntity user = new UserEntity();
+        user.setAccountId(accountId);
+        user.setPassword("Random");
+
+        when(userRepository.existsByPassword(any())).thenReturn(false);
+
+        //Act
+        String result = userService.generateRandomPassword();
+
+        //Assert
+        Assertions.assertEquals(result.length(), 15);
     }
 }

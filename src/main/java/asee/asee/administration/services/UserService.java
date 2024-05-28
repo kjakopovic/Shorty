@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.security.SecureRandom;
 import java.util.NoSuchElementException;
 import java.util.Random;
+
 
 @Service
 public class UserService {
@@ -24,12 +26,12 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean CheckIfUserExists(String accountId){
+    public boolean checkIfUserExists(String accountId){
         return userRepository.existsById(accountId);
     }
 
     public String generateRandomPassword() {
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder();
 
         for (int i = 0; i < 15; i++) {

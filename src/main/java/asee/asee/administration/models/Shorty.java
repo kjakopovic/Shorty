@@ -11,16 +11,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "shorties")
 @Getter
 @Setter
-public class UserEntity {
+public class Shorty {
     @Id
-    @Length(max = 50)
-    private String accountId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    private String password;
+    @Length(max = 200)
+    private String originalUrl;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Length(max = 5)
+    private String hashedUrl;
+
+    private int redirectionType;
+
+    @OneToMany(mappedBy = "shorty", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserShorty> shortedUrls = new ArrayList<>();
 }
