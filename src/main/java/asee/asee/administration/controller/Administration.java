@@ -83,6 +83,12 @@ public class Administration {
     @PostMapping("/short")
     public ResponseEntity<ShortyResponse> shortenTheUrl(@RequestBody ShortyRequest request) {
         ShortyResponse response = new ShortyResponse();
+
+        if (request.getRedirectType() != 301 && request.getRedirectType() != 302) {
+            response.setDescription("Molimo vas unesite kod za preusmjeravanje 301 ili 302!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         try {
