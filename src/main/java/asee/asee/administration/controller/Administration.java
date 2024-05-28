@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/administration")
 public class Administration {
@@ -104,5 +106,12 @@ public class Administration {
 
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<Map<String, Integer>> getUsersStatistics() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return ResponseEntity.ok(shortyService.getUsersShortyStatistics(authentication.getName()));
     }
 }

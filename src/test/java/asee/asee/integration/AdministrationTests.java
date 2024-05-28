@@ -25,10 +25,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -289,6 +292,49 @@ public class AdministrationTests {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(mapper.writeValueAsString(request)))
                     .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(response)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void getUsersStatistics_when_notAuthenticated_returns_status401Unauthorized() {
+        try {
+            ShortyRequest request = new ShortyRequest();
+
+            request.setUrl("https://google.com");
+            request.setRedirectType(301);
+
+            ShortyResponse response = new ShortyResponse();
+
+            response.setShortUrl(null);
+
+
+            mvc.perform(post("/administration/short")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(request)))
+                    .andExpect(status().isUnauthorized());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    @WithMockUser(username = "RandomUser")
+    public void getUsersStatistics_returns_status200Ok() {
+        try {
+            Map<String, Integer> response = new HashMap<>();
+            response.put("www.google.com", 0);
+            response.put("http://chatgpt.openai", 10);
+            response.put("testing/testing", 2);
+            response.put("localhost:8000/wow", 25);
+
+            when(shortyService.getUsersShortyStatistics("RandomUser"))
+                    .thenReturn(response);
+
+            mvc.perform(get("/administration/statistics"))
+                    .andExpect(status().isOk())
                     .andExpect(content().json(mapper.writeValueAsString(response)));
         } catch (Exception e) {
             throw new RuntimeException(e);

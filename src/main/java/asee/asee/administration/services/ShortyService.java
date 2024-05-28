@@ -11,9 +11,10 @@ import asee.asee.administration.responseDtos.ResolvedHashResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -117,5 +118,19 @@ public class ShortyService {
         shortyRepository.save(shorty);
 
         return new ResolvedHashResponse(shorty.getOriginalUrl(), shorty.getRedirectionType());
+    }
+
+    public Map<String, Integer> getUsersShortyStatistics(String accountId){
+        Map<String, Integer> redirects = new HashMap<>();
+
+        List<UserShorty> shortiesData = userShortyRepository.findAllByUserEntityAccountId(accountId);
+
+        shortiesData.forEach(data -> {
+            Optional<Shorty> shorty = shortyRepository.findById(data.getShorty().getId());
+
+            shorty.ifPresent(value -> redirects.put(value.getOriginalUrl(), data.getCounter()));
+        });
+
+        return redirects;
     }
 }
