@@ -271,4 +271,27 @@ public class AdministrationTests {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    @WithMockUser(username = "RandomUser")
+    public void shortenTheUrl_when_notCorrectRedirectionCode_returns_status400BadRequest() {
+        try {
+            ShortyRequest request = new ShortyRequest();
+
+            request.setUrl("https://google.com");
+            request.setRedirectType(30);
+
+            ShortyResponse response = new ShortyResponse();
+
+            response.setDescription("Molimo vas unesite kod za preusmjeravanje 301 ili 302!");
+
+            mvc.perform(post("/administration/short")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(request)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(response)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/administration")
 public class Administration {
 
+    public static final String HTTP_SHORTY_COM = "http://shorty.com/";
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final ShortyService shortyService;
@@ -39,22 +40,22 @@ public class Administration {
 
         boolean userExists = userService.checkIfUserExists(request.getAccountId());
 
-        if (!userExists) {
-            response.setPassword(userService.generateRandomPassword());
-            String hashedPassword = userService.encryptPassword(response.getPassword());
-
-            UserEntity user = new UserEntity();
-            user.setAccountId(request.getAccountId());
-            user.setPassword(hashedPassword);
-
-            userService.addNewUser(user);
-
-            response.setSuccess(true);
-            return ResponseEntity.ok(response);
-        } else {
+        if (userExists){
             response.setDescription("Account ID already exists!");
             return ResponseEntity.badRequest().body(response);
         }
+
+        response.setPassword(userService.generateRandomPassword());
+        String hashedPassword = userService.encryptPassword(response.getPassword());
+
+        UserEntity user = new UserEntity();
+        user.setAccountId(request.getAccountId());
+        user.setPassword(hashedPassword);
+
+        userService.addNewUser(user);
+
+        response.setSuccess(true);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
@@ -95,7 +96,7 @@ public class Administration {
             String hashedUrl = shortyService
                     .shortenTheUrl(request.getUrl(), request.getRedirectType(), authentication.getName());
 
-            response.setShortUrl("http://shorty.com/" + hashedUrl); //pretpostavka da nam je to domena
+            response.setShortUrl(HTTP_SHORTY_COM + hashedUrl); //pretpostavka da nam je to domena
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
