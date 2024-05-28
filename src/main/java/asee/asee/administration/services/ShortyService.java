@@ -40,7 +40,7 @@ public class ShortyService {
                 .orElseThrow();
 
         try {
-            List<Shorty> shorty = shortyRepository.findByOriginalUrl(url);
+            List<Shorty> shorty = shortyRepository.findShortiesByOriginalUrl(url);
 
             if (!shorty.isEmpty()){
                 boolean isUserShortyExisting = userShortyRepository

@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface IShortyRepository extends JpaRepository<Shorty, Integer> {
     Optional<Shorty> findByOriginalUrlAndRedirectionType(String url, Integer redirectionType);
-    List<Shorty> findByOriginalUrl(String url);
+    @Query("SELECT s FROM Shorty s WHERE s.originalUrl = :url")
+    List<Shorty> findShortiesByOriginalUrl(@Param("url") String url);
     Optional<Shorty> findByHashedUrl(String hashedUrl);
 }
