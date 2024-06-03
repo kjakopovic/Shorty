@@ -32,7 +32,7 @@ public class RedirectionTests {
     private ShortyService shortyService;
 
     @Test
-    public void redirectUser_when_userNotAuthorized_returns_401Unauthorized() {
+    public void redirectUserWhenUserNotAuthorizedReturns401Unauthorized() {
         try {
             mvc.perform(get("/123"))
                     .andExpect(status().isUnauthorized());
@@ -43,7 +43,7 @@ public class RedirectionTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void redirectUser_when_serviceThrowsAnError_returns_404NotFound() {
+    public void redirectUserWhenServiceThrowsAnErrorReturns400BadRequest() {
         try {
             String hash = "123";
 
@@ -51,7 +51,7 @@ public class RedirectionTests {
                     .thenThrow(new NoSuchElementException("There was a mistake in the service!"));
 
             mvc.perform(get("/123"))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isBadRequest());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -59,7 +59,7 @@ public class RedirectionTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void redirectUser_when_redirectionTypeIs301_returns_301MovedPermanently() {
+    public void redirectUserWhenRedirectionTypeIs301Returns301MovedPermanently() {
         try {
             String hash = "123";
             String url = "https://www.google.com";
@@ -79,7 +79,7 @@ public class RedirectionTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void redirectUser_when_redirectionTypeIs302_returns_302MovedTemporarily() {
+    public void redirectUserWhenRedirectionTypeIs302Returns302MovedTemporarily() {
         try {
             String hash = "123";
             String url = "https://www.google.com";

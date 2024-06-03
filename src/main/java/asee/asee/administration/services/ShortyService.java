@@ -83,7 +83,9 @@ public class ShortyService {
                 }
             }
 
-            String hashedUrl = passwordEncoder.encode(url).substring(0, 5);
+            String hashedUrl = passwordEncoder.encode(url)
+                    .replaceAll("[/:?&=#]", "X")
+                    .substring(40, 45);
 
             Shorty newShorty = new Shorty();
             newShorty.setOriginalUrl(url);
@@ -123,12 +125,10 @@ public class ShortyService {
     public Map<String, Integer> getUsersShortyStatistics(String accountId){
         Map<String, Integer> redirects = new HashMap<>();
 
-        List<UserShorty> shortiesData = userShortyRepository.findAllByUserEntityAccountId(accountId);
+        List<UserShorty> shortiesData = userShortyRepository.findAllByUserEntityAccountIdWithShorty(accountId);
 
         shortiesData.forEach(data -> {
-            Optional<Shorty> shorty = shortyRepository.findById(data.getShorty().getId());
-
-            shorty.ifPresent(value -> redirects.put(value.getOriginalUrl(), data.getCounter()));
+            redirects.put(data.getShorty().getOriginalUrl(), data.getCounter());
         });
 
         return redirects;

@@ -1,6 +1,7 @@
 package asee.asee.administration.controller;
 
 import asee.asee.administration.responseDtos.ResolvedHashResponse;
+import asee.asee.administration.services.AuthenticationService;
 import asee.asee.administration.services.ShortyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,12 @@ import java.net.URI;
 public class Redirection {
 
     private final ShortyService shortyService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public Redirection(ShortyService shortyService) {
+    public Redirection(ShortyService shortyService, AuthenticationService authenticationService) {
         this.shortyService = shortyService;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping("/{hash}")
@@ -31,17 +34,16 @@ public class Redirection {
         ResolvedHashResponse serviceResponse;
 
         try{
-            Authentication authentication =
-                    SecurityContextHolder.getContext().getAuthentication();
+            String loggedInUserAccountId = authenticationService.getLoggedInUsersAccountId();
 
             serviceResponse =
-                    shortyService.resolveTheHashedUrl(hash, authentication.getName());
+                    shortyService.resolveTheHashedUrl(hash, loggedInUserAccountId);
 
             httpStatus = serviceResponse.getRedirectionType() == 301
                     ? HttpStatus.MOVED_PERMANENTLY : HttpStatus.MOVED_TEMPORARILY;
         }catch (Exception e){
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
+                    .status(HttpStatus.BAD_REQUEST)
                     .build();
         }
 

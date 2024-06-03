@@ -57,7 +57,7 @@ public class AdministrationTests {
     private AuthenticationManager authenticationManager;
 
     @Test
-    public void registerUser_when_accountIdAlreadyExists_returns_status400BadRequest() {
+    public void registerUserWhenAccountIdAlreadyExistsReturnsStatus400BadRequest() {
         try {
             RegisterRequest request = new RegisterRequest();
             RegisterResponse response = new RegisterResponse();
@@ -81,7 +81,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void registerUser_returns_status200Ok() {
+    public void registerUserReturnsStatus200Ok() {
         try {
             RegisterRequest request = new RegisterRequest();
             request.setAccountId("TestingId");
@@ -106,7 +106,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void loginUser_when_inCorrectCredentials_returns_status400BadRequest() {
+    public void loginUserWhenInCorrectCredentialsReturnsStatus400BadRequest() {
         try {
             LoginRequest request = new LoginRequest();
             LoginResponse response = new LoginResponse();
@@ -133,7 +133,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void loginUser_when_correctCredentials_and_ExceptionThrown_returns_status400BadRequest() {
+    public void loginUserWhenCorrectCredentialsAndExceptionThrownReturnsStatus400BadRequest() {
         try {
             LoginRequest request = new LoginRequest();
             LoginResponse response = new LoginResponse();
@@ -162,7 +162,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void loginUser_when_correctCredentials_andNoError_returns_status200Ok() {
+    public void loginUserWhenCorrectCredentialsAndNoErrorReturnsStatus200Ok() {
         try {
             LoginRequest request = new LoginRequest();
             LoginResponse response = new LoginResponse();
@@ -192,7 +192,7 @@ public class AdministrationTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void shortenTheUrl_when_shortyService_throwsException_returns_status400BadRequest() {
+    public void shortenTheUrlWhenShortyServiceThrowsExceptionReturnsStatus400BadRequest() {
         try {
             String errorMessage = "There was a mistake!";
 
@@ -220,7 +220,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void shortenTheUrl_when_notAuthenticated_returns_status401Unauthorized() {
+    public void shortenTheUrlWhenNotAuthenticatedReturnsStatus401Unauthorized() {
         try {
             String errorMessage = "There was a mistake!";
 
@@ -248,7 +248,7 @@ public class AdministrationTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void shortenTheUrl_returns_status200Ok() {
+    public void shortenTheUrlReturnsStatus200Ok() {
         try {
             String hashedUrl = "#wa2!";
 
@@ -277,7 +277,7 @@ public class AdministrationTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void shortenTheUrl_when_notCorrectRedirectionCode_returns_status400BadRequest() {
+    public void shortenTheUrlWhenNotCorrectRedirectionCodeReturnsStatus400BadRequest() {
         try {
             ShortyRequest request = new ShortyRequest();
 
@@ -299,7 +299,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void getUsersStatistics_when_notAuthenticated_returns_status401Unauthorized() {
+    public void getUsersStatisticsWhenNotAuthenticatedReturnsStatus401Unauthorized() {
         try {
             ShortyRequest request = new ShortyRequest();
 
@@ -322,7 +322,7 @@ public class AdministrationTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void getUsersStatistics_returns_status200Ok() {
+    public void getUsersStatisticsReturnsStatus200Ok() {
         try {
             Map<String, Integer> response = new HashMap<>();
             response.put("www.google.com", 0);

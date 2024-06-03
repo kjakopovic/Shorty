@@ -7,6 +7,7 @@ import asee.asee.administration.requestDtos.ShortyRequest;
 import asee.asee.administration.responseDtos.LoginResponse;
 import asee.asee.administration.responseDtos.RegisterResponse;
 import asee.asee.administration.responseDtos.ShortyResponse;
+import asee.asee.administration.services.AuthenticationService;
 import asee.asee.administration.services.ShortyService;
 import asee.asee.administration.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,14 @@ public class Administration {
 
     public static final String HTTP_SHORTY_COM = "http://shorty.com/";
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationService authenticationService;
     private final ShortyService shortyService;
 
     @Autowired
-    public Administration(UserService userService, AuthenticationManager authenticationManager, ShortyService shortyService) {
+    public Administration(UserService userService, AuthenticationService authenticationService, ShortyService shortyService) {
         this.userService = userService;
         this.shortyService = shortyService;
-        this.authenticationManager = authenticationManager;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping("/register")
@@ -67,10 +68,7 @@ public class Administration {
 
         try {
             if (userService.isCorrectCredentials(request.getAccountId(), request.getPassword())) {
-                Authentication authentication = authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(request.getAccountId(), request.getPassword()));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                authenticationService.loginUser(request.getAccountId(), request.getPassword());
 
                 response.setSuccess(true);
                 return ResponseEntity.ok(response);
@@ -92,11 +90,11 @@ public class Administration {
             return ResponseEntity.badRequest().body(response);
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUserAccountId = authenticationService.getLoggedInUsersAccountId();
 
         try {
             String hashedUrl = shortyService
-                    .shortenTheUrl(request.getUrl(), request.getRedirectType(), authentication.getName());
+                    .shortenTheUrl(request.getUrl(), request.getRedirectType(), loggedInUserAccountId);
 
             response.setShortUrl(HTTP_SHORTY_COM + hashedUrl); //pretpostavka da nam je to domena
 
@@ -110,8 +108,8 @@ public class Administration {
 
     @GetMapping("/statistics")
     public ResponseEntity<Map<String, Integer>> getUsersStatistics() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUserAccountId = authenticationService.getLoggedInUsersAccountId();
 
-        return ResponseEntity.ok(shortyService.getUsersShortyStatistics(authentication.getName()));
+        return ResponseEntity.ok(shortyService.getUsersShortyStatistics(loggedInUserAccountId));
     }
 }

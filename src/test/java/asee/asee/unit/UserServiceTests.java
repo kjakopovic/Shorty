@@ -29,7 +29,7 @@ public class UserServiceTests {
     private IUserRepository userRepository;
 
     @Test
-    public void isCorrectCredentials_whenUserIsNotFound_ReturnsFalse(){
+    public void isCorrectCredentialsWhenUserIsNotFoundReturnsFalse(){
         //Arrange
         String accountId = "Karlo";
         String exceptionMessage = "User not found";
@@ -44,7 +44,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void isCorrectCredentials_whenCorrectPassword_And_correctAccountId_IsEntered_ReturnsTrue(){
+    public void isCorrectCredentialsWhenCorrectPasswordAndCorrectAccountIdIsEnteredReturnsTrue(){
 
         //Arrange
         String accountId = "Karlo";
@@ -64,7 +64,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void isCorrectCredentials_whenIncorrectPassword_IsEntered_ReturnsFalse(){
+    public void isCorrectCredentialsWhenIncorrectPasswordIsEnteredReturnsFalse(){
 
         //Arrange
         String accountId = "Karlo";
@@ -84,7 +84,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void isCorrectCredentials_whenIncorrectAccountId_IsEntered_ReturnsFalse(){
+    public void isCorrectCredentialsWhenIncorrectAccountIdIsEnteredReturnsFalse(){
 
         //Arrange
         String accountId = "Karlo";
@@ -104,7 +104,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void encryptPassword_encodes_correctly(){
+    public void encryptPasswordEncodesCorrectly(){
         //Arrange
         String password = "ojgisfsd";
 
@@ -116,7 +116,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void addNewUser_saves_user(){
+    public void addNewUserSavesUser(){
         //Arrange
         String accountId = "Karlo";
         String password = "ojgisfsd";
@@ -133,7 +133,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void generateRandomPassword_generatesPassword_of_length15(){
+    public void generateRandomPasswordGeneratesPasswordOfLength15(){
 
         //Arrange
         String accountId = "Karlo";
