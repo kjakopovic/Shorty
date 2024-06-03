@@ -18,10 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -46,7 +43,7 @@ public class ShortyServiceTests {
     private IUserShortyRepository userShortyRepository;
 
     @Test
-    public void shortenTheUrl_when_userIsNotFound_throwsException(){
+    public void shortenTheUrlWhenUserIsNotFoundThrowsException(){
         //Arrange
         String accountId = "Karlo";
         String exceptionMessage = "User not found";
@@ -60,7 +57,7 @@ public class ShortyServiceTests {
     }
 
     @Test
-    public void shortenTheUrl_when_shortyConnectionAlreadyFound_and_sentDifferentRedirectionType_throwsException(){
+    public void shortenTheUrlWhenShortyConnectionAlreadyFoundAndSentDifferentRedirectionTypeThrowsException(){
         //Arrange
         UserEntity user = new UserEntity();
         user.setPassword("password1");
@@ -96,7 +93,7 @@ public class ShortyServiceTests {
     }
 
     @Test
-    public void shortenTheUrl_when_shortyConnectionAlreadyFound_and_sentCorrectRedirectionType_returnsHashedUrl() {
+    public void shortenTheUrlWhenShortyConnectionAlreadyFoundAndSentCorrectRedirectionTypeReturnsHashedUrl() {
         //Arrange
         UserEntity user = new UserEntity();
         user.setPassword("password1");
@@ -132,7 +129,7 @@ public class ShortyServiceTests {
     }
 
     @Test
-    public void shortenTheUrl_when_shortyConnectionNotFound_and_sentCorrectRedirectionType_returnsHashedUrl() {
+    public void shortenTheUrlWhenShortyConnectionNotFoundAndSentCorrectRedirectionTypeReturnsHashedUrl() {
         //Arrange
         UserEntity user = new UserEntity();
         user.setPassword("password1");
@@ -168,7 +165,7 @@ public class ShortyServiceTests {
     }
 
     @Test
-    public void shortenTheUrl_when_shortyConnectionNotFound_and_sentNewRedirectionType_returnsNewHashedUrl() {
+    public void shortenTheUrlWhenShortyConnectionNotFoundAndSentNewRedirectionTypeReturnsNewHashedUrl() {
         //Arrange
         UserEntity user = new UserEntity();
         user.setPassword("password1");
@@ -189,7 +186,8 @@ public class ShortyServiceTests {
         when(userShortyRepository
                 .existsByUserEntityAccountIdAndShortyOriginalUrl(user.getAccountId(), shorty.getOriginalUrl()))
                 .thenReturn(false);
-        when(passwordEncoder.encode(shorty.getOriginalUrl())).thenReturn("ABCDE_3refgosgoef");
+        when(passwordEncoder.encode(shorty.getOriginalUrl()))
+                .thenReturn("_3refgosgoefajveNI>cv/*-?FJIOejfijsiorjgABCDEio<srjgw9oi90'fw4jgrnogjWEIGU90irg");
 
         //Act
         String result;
@@ -205,7 +203,7 @@ public class ShortyServiceTests {
     }
 
     @Test
-    public void resolveTheHashedUrl_when_shortyNotFound_throwsException() {
+    public void resolveTheHashedUrlWhenShortyNotFoundThrowsException() {
         //Arrange
         String errorMessage = "Shorty not found!";
 
@@ -229,7 +227,7 @@ public class ShortyServiceTests {
     }
 
     @Test
-    public void resolveTheHashedUrl_when_userShortyNotFound_throwsException() {
+    public void resolveTheHashedUrlWhenUserShortyNotFoundThrowsException() {
         //Arrange
         String errorMessage = "Connection not found!";
 
@@ -258,7 +256,7 @@ public class ShortyServiceTests {
     }
 
     @Test
-    public void resolveTheHashedUrl_correctResponse() {
+    public void resolveTheHashedUrlCorrectResponse() {
         //Arrange
         UserEntity user = new UserEntity();
         user.setPassword("password1");
@@ -286,6 +284,85 @@ public class ShortyServiceTests {
 
         //Act
         ResolvedHashResponse result = shortyService.resolveTheHashedUrl("HashedUrl", user.getAccountId());
+
+        //Assert
+        Assertions.assertEquals(result, response);
+    }
+
+    @Test
+    public void getUsersShortyStatisticsEmptyListResponse() {
+        //Arrange
+        Map<String, Integer> response = new HashMap<>();
+
+        when(userShortyRepository.findAllByUserEntityAccountIdWithShorty(any()))
+                .thenReturn(Collections.emptyList());
+
+        //Act
+        Map<String, Integer> result = shortyService.getUsersShortyStatistics("RandomUser");
+
+        //Assert
+        Assertions.assertEquals(result, response);
+    }
+
+    @Test
+    public void getUsersShortyStatisticsReturnsPopulatedListResponse() {
+        //Arrange
+        UserEntity user = new UserEntity();
+        user.setPassword("password1");
+        user.setAccountId("Karlo");
+
+        Shorty shorty1 = new Shorty();
+        shorty1.setHashedUrl("HashedUrl");
+        shorty1.setOriginalUrl("Url");
+        shorty1.setRedirectionType(302);
+        shorty1.setId(1);
+
+        Shorty shorty2 = new Shorty();
+        shorty2.setHashedUrl("HashedUrl2");
+        shorty2.setOriginalUrl("Url2");
+        shorty2.setRedirectionType(301);
+        shorty2.setId(2);
+
+        Shorty shorty3 = new Shorty();
+        shorty3.setHashedUrl("HashedUrl3");
+        shorty3.setOriginalUrl("Url3");
+        shorty3.setRedirectionType(302);
+        shorty3.setId(3);
+
+        UserShorty userShorty1 = new UserShorty();
+        userShorty1.setId(new UserShortyId(user.getAccountId(), 1));
+        userShorty1.setShorty(shorty1);
+        userShorty1.setUserEntity(user);
+        userShorty1.setCounter(0);
+
+        UserShorty userShorty2 = new UserShorty();
+        userShorty2.setId(new UserShortyId(user.getAccountId(), 2));
+        userShorty2.setShorty(shorty2);
+        userShorty2.setUserEntity(user);
+        userShorty2.setCounter(5);
+
+        UserShorty userShorty3 = new UserShorty();
+        userShorty3.setId(new UserShortyId(user.getAccountId(), 3));
+        userShorty3.setShorty(shorty3);
+        userShorty3.setUserEntity(user);
+        userShorty3.setCounter(100);
+
+        List<UserShorty> usershorties = new ArrayList<>();
+        usershorties.add(userShorty1);
+        usershorties.add(userShorty2);
+        usershorties.add(userShorty3);
+
+        Map<String, Integer> response = new HashMap<>();
+
+        response.put(shorty1.getOriginalUrl(), userShorty1.getCounter());
+        response.put(shorty2.getOriginalUrl(), userShorty2.getCounter());
+        response.put(shorty3.getOriginalUrl(), userShorty3.getCounter());
+
+        when(userShortyRepository.findAllByUserEntityAccountIdWithShorty(any()))
+                .thenReturn(usershorties);
+
+        //Act
+        Map<String, Integer> result = shortyService.getUsersShortyStatistics(user.getAccountId());
 
         //Assert
         Assertions.assertEquals(result, response);

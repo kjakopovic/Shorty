@@ -25,10 +25,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -54,7 +57,7 @@ public class AdministrationTests {
     private AuthenticationManager authenticationManager;
 
     @Test
-    public void registerUser_when_accountIdAlreadyExists_returns_status400BadRequest() {
+    public void registerUserWhenAccountIdAlreadyExistsReturnsStatus400BadRequest() {
         try {
             RegisterRequest request = new RegisterRequest();
             RegisterResponse response = new RegisterResponse();
@@ -78,7 +81,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void registerUser_returns_status200Ok() {
+    public void registerUserReturnsStatus200Ok() {
         try {
             RegisterRequest request = new RegisterRequest();
             request.setAccountId("TestingId");
@@ -103,7 +106,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void loginUser_when_inCorrectCredentials_returns_status400BadRequest() {
+    public void loginUserWhenInCorrectCredentialsReturnsStatus400BadRequest() {
         try {
             LoginRequest request = new LoginRequest();
             LoginResponse response = new LoginResponse();
@@ -130,7 +133,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void loginUser_when_correctCredentials_and_ExceptionThrown_returns_status400BadRequest() {
+    public void loginUserWhenCorrectCredentialsAndExceptionThrownReturnsStatus400BadRequest() {
         try {
             LoginRequest request = new LoginRequest();
             LoginResponse response = new LoginResponse();
@@ -159,7 +162,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void loginUser_when_correctCredentials_andNoError_returns_status200Ok() {
+    public void loginUserWhenCorrectCredentialsAndNoErrorReturnsStatus200Ok() {
         try {
             LoginRequest request = new LoginRequest();
             LoginResponse response = new LoginResponse();
@@ -189,7 +192,7 @@ public class AdministrationTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void shortenTheUrl_when_shortyService_throwsException_returns_status400BadRequest() {
+    public void shortenTheUrlWhenShortyServiceThrowsExceptionReturnsStatus400BadRequest() {
         try {
             String errorMessage = "There was a mistake!";
 
@@ -217,7 +220,7 @@ public class AdministrationTests {
     }
 
     @Test
-    public void shortenTheUrl_when_notAuthenticated_returns_status401Unauthorized() {
+    public void shortenTheUrlWhenNotAuthenticatedReturnsStatus401Unauthorized() {
         try {
             String errorMessage = "There was a mistake!";
 
@@ -245,7 +248,7 @@ public class AdministrationTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void shortenTheUrl_returns_status200Ok() {
+    public void shortenTheUrlReturnsStatus200Ok() {
         try {
             String hashedUrl = "#wa2!";
 
@@ -274,7 +277,7 @@ public class AdministrationTests {
 
     @Test
     @WithMockUser(username = "RandomUser")
-    public void shortenTheUrl_when_notCorrectRedirectionCode_returns_status400BadRequest() {
+    public void shortenTheUrlWhenNotCorrectRedirectionCodeReturnsStatus400BadRequest() {
         try {
             ShortyRequest request = new ShortyRequest();
 
@@ -289,6 +292,49 @@ public class AdministrationTests {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(mapper.writeValueAsString(request)))
                     .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(response)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void getUsersStatisticsWhenNotAuthenticatedReturnsStatus401Unauthorized() {
+        try {
+            ShortyRequest request = new ShortyRequest();
+
+            request.setUrl("https://google.com");
+            request.setRedirectType(301);
+
+            ShortyResponse response = new ShortyResponse();
+
+            response.setShortUrl(null);
+
+
+            mvc.perform(post("/administration/short")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(request)))
+                    .andExpect(status().isUnauthorized());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    @WithMockUser(username = "RandomUser")
+    public void getUsersStatisticsReturnsStatus200Ok() {
+        try {
+            Map<String, Integer> response = new HashMap<>();
+            response.put("www.google.com", 0);
+            response.put("http://chatgpt.openai", 10);
+            response.put("testing/testing", 2);
+            response.put("localhost:8000/wow", 25);
+
+            when(shortyService.getUsersShortyStatistics("RandomUser"))
+                    .thenReturn(response);
+
+            mvc.perform(get("/administration/statistics"))
+                    .andExpect(status().isOk())
                     .andExpect(content().json(mapper.writeValueAsString(response)));
         } catch (Exception e) {
             throw new RuntimeException(e);
