@@ -8,6 +8,7 @@ import asee.asee.administration.repositories.IShortyRepository;
 import asee.asee.administration.repositories.IUserRepository;
 import asee.asee.administration.repositories.IUserShortyRepository;
 import asee.asee.administration.responseDtos.ResolvedHashResponse;
+import asee.asee.exceptions.ShortyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class ShortyService {
         this.userShortyRepository = userShortyRepository;
     }
 
-    public String shortenTheUrl(String url, int redirectionType, String accountId) throws Exception {
+    public String shortenTheUrl(String url, int redirectionType, String accountId) throws ShortyException {
         UserEntity loggedInUser = userRepository.findById(accountId)
                 .orElseThrow();
 
@@ -102,7 +103,7 @@ public class ShortyService {
 
             return hashedUrl;
         }catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new ShortyException("New shorty couldn't be made", e.getMessage());
         }
     }
 

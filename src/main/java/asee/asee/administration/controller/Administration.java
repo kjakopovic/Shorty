@@ -1,7 +1,7 @@
 package asee.asee.administration.controller;
 
 import asee.asee.PraksaAseeApplication;
-import asee.asee.administration.models.UserEntity;
+import asee.asee.exceptions.ShortyException;
 import asee.asee.administration.requestDtos.LoginRequest;
 import asee.asee.administration.requestDtos.RegisterRequest;
 import asee.asee.administration.requestDtos.ShortyRequest;
@@ -53,13 +53,15 @@ public class Administration {
         }
 
         response.setPassword(userService.generateRandomPassword());
-        String hashedPassword = userService.encryptPassword(response.getPassword());
 
-        UserEntity user = new UserEntity();
-        user.setAccountId(request.getAccountId());
-        user.setPassword(hashedPassword);
-
-        userService.addNewUser(user);
+        try {
+            String hashedPassword = userService.encryptPassword(response.getPassword());
+            userService.validateAndCreateNewUser(request.getAccountId(), hashedPassword);
+        }
+        catch (ShortyException e) {
+            response.setDescription(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
 
         logger.info("Novi user dodan, uspješna registracija");
 
@@ -112,11 +114,11 @@ public class Administration {
             return ResponseEntity.badRequest().body(response);
         }
 
-        String loggedInUserAccountId = authenticationService.getLoggedInUsersAccountId();
-
         try {
-            String hashedUrl = shortyService
-                    .shortenTheUrl(request.getUrl(), request.getRedirectType(), loggedInUserAccountId);
+            String hashedUrl = shortyService.shortenTheUrl(
+                    request.getUrl(),
+                    request.getRedirectType(),
+                    authenticationService.getLoggedInUsersAccountId());
 
             response.setShortUrl(HTTP_SHORTY_COM + hashedUrl); //pretpostavka da nam je to domena
 
@@ -126,7 +128,7 @@ public class Administration {
         } catch (Exception e) {
             logger.error("[SHORTEN THE URL ENDPOINT] - došlo je do pogreške: {}", e.getMessage());
 
-            response.setDescription("Došlo je do pogreške!");
+            response.setDescription("Došlo je do pogreške: " + e.getMessage());
 
             return ResponseEntity.badRequest().body(response);
         }

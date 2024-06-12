@@ -1,29 +1,35 @@
 package asee.asee.administration.services;
 
+import asee.asee.exceptions.ShortyException;
 import asee.asee.administration.models.UserEntity;
 import asee.asee.administration.repositories.IUserRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.SecureRandom;
 import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.Set;
 
 
 @Service
 public class UserService {
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    private IUserRepository userRepository;
+    private final IUserRepository userRepository;
+
+    private final Validator validator;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
 
     @Autowired
-    public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder, Validator validator){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.validator = validator;
     }
 
     public boolean checkIfUserExists(String accountId){
@@ -46,7 +52,24 @@ public class UserService {
         return password.toString();
     }
 
-    public void addNewUser(UserEntity user) {
+    public void validateAndCreateNewUser(String accountId, String password) throws ShortyException {
+        UserEntity user = new UserEntity();
+        user.setAccountId(accountId);
+        user.setPassword(password);
+
+        Set<ConstraintViolation<UserEntity>> violations = validator.validate(user);
+
+        if (!violations.isEmpty()) {
+            StringBuilder errorMessages = new StringBuilder();
+            for (ConstraintViolation<UserEntity> violation : violations) {
+                errorMessages.append(violation.getMessage()).append(", ");
+            }
+            errorMessages.delete(errorMessages.length() - 2, errorMessages.length() - 1);
+
+            throw new ShortyException("User validation failed", errorMessages.toString());
+//            logger.warn("[REGISTER USER ENDPOINT] - Validation failed: " + errorMessage);
+        }
+
         userRepository.save(user);
     }
 

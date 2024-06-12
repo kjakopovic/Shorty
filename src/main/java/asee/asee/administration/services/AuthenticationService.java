@@ -1,5 +1,6 @@
 package asee.asee.administration.services;
 
+import asee.asee.administration.models.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
