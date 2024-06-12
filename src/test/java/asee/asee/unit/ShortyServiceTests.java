@@ -9,6 +9,7 @@ import asee.asee.administration.repositories.IUserRepository;
 import asee.asee.administration.repositories.IUserShortyRepository;
 import asee.asee.administration.responseDtos.ResolvedHashResponse;
 import asee.asee.administration.services.ShortyService;
+import asee.asee.exceptions.ShortyException;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -283,7 +284,12 @@ public class ShortyServiceTests {
                 .thenReturn(Optional.of(userShorty));
 
         //Act
-        ResolvedHashResponse result = shortyService.resolveTheHashedUrl("HashedUrl", user.getAccountId());
+        ResolvedHashResponse result;
+        try {
+            result = shortyService.resolveTheHashedUrl("HashedUrl", user.getAccountId());
+        } catch (ShortyException e) {
+            throw new RuntimeException(e);
+        }
 
         //Assert
         Assertions.assertEquals(result, response);

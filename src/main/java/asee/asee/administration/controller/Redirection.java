@@ -1,8 +1,11 @@
 package asee.asee.administration.controller;
 
+import asee.asee.PraksaAseeApplication;
 import asee.asee.administration.responseDtos.ResolvedHashResponse;
 import asee.asee.administration.services.AuthenticationService;
 import asee.asee.administration.services.ShortyService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

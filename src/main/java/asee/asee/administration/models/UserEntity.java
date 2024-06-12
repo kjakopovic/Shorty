@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 public class UserEntity {
     @Id
-    @Length(max = 50)
+    @Length(max = 50, message = "Account ID mora biti maksimalno 50 charactera!")
     private String accountId;
 
     private String password;

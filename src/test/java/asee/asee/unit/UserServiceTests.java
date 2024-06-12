@@ -3,6 +3,7 @@ package asee.asee.unit;
 import asee.asee.administration.models.UserEntity;
 import asee.asee.administration.repositories.IUserRepository;
 import asee.asee.administration.services.UserService;
+import asee.asee.exceptions.ShortyException;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -116,20 +117,31 @@ public class UserServiceTests {
     }
 
     @Test
-    public void addNewUserSavesUser(){
+    public void validateAndCreateNewUserWhenValidationFailsThrowsNewShortyException(){
         //Arrange
-        String accountId = "Karlo";
-        String password = "ojgisfsd";
+        String accountId = "123456789kakajdosit123456789kakajdosit123456789kakajdosit";
+        String hashedPassword = "Kodjokdl989_fei";
 
-        UserEntity user = new UserEntity();
-        user.setAccountId(accountId);
-        user.setPassword(password);
+        //Act & Assert
+        Assertions.assertThrows(ShortyException.class,
+                () -> userService.validateAndCreateNewUser(accountId, hashedPassword));
+    }
+
+    @Test
+    public void validateAndCreateNewUserWhenValidationIsCorrectSavesNewUser(){
+        //Arrange
+        String accountId = "12345678osit";
+        String hashedPassword = "Kodjokdl989_fei";
 
         //Act
-        userService.addNewUser(user);
+        try {
+            userService.validateAndCreateNewUser(accountId, hashedPassword);
+        } catch (ShortyException e) {
+            throw new RuntimeException(e);
+        }
 
-        //Assert
-        Mockito.verify(userRepository, times(1)).save(user);
+        //Act & Assert
+        Mockito.verify(userRepository, times(1)).save(any(UserEntity.class));
     }
 
     @Test

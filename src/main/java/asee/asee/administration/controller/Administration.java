@@ -1,6 +1,7 @@
 package asee.asee.administration.controller;
 
-import asee.asee.administration.models.UserEntity;
+import asee.asee.PraksaAseeApplication;
+import asee.asee.exceptions.ShortyException;
 import asee.asee.administration.requestDtos.LoginRequest;
 import asee.asee.administration.requestDtos.RegisterRequest;
 import asee.asee.administration.requestDtos.ShortyRequest;
@@ -10,12 +11,10 @@ import asee.asee.administration.responseDtos.ShortyResponse;
 import asee.asee.administration.services.AuthenticationService;
 import asee.asee.administration.services.ShortyService;
 import asee.asee.administration.services.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -49,13 +48,15 @@ public class Administration {
         }
 
         response.setPassword(userService.generateRandomPassword());
-        String hashedPassword = userService.encryptPassword(response.getPassword());
 
-        UserEntity user = new UserEntity();
-        user.setAccountId(request.getAccountId());
-        user.setPassword(hashedPassword);
-
-        userService.addNewUser(user);
+        try {
+            String hashedPassword = userService.encryptPassword(response.getPassword());
+            userService.validateAndCreateNewUser(request.getAccountId(), hashedPassword);
+        }
+        catch (ShortyException e) {
+            response.setDescription(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
 
         response.setSuccess(true);
         return ResponseEntity.ok(response);
@@ -68,6 +69,7 @@ public class Administration {
 
         try {
             if (userService.isCorrectCredentials(request.getAccountId(), request.getPassword())) {
+
                 authenticationService.loginUser(request.getAccountId(), request.getPassword());
 
                 response.setSuccess(true);
@@ -87,14 +89,15 @@ public class Administration {
 
         if (request.getRedirectType() != 301 && request.getRedirectType() != 302) {
             response.setDescription("Molimo vas unesite kod za preusmjeravanje 301 ili 302!");
+
             return ResponseEntity.badRequest().body(response);
         }
 
-        String loggedInUserAccountId = authenticationService.getLoggedInUsersAccountId();
-
         try {
-            String hashedUrl = shortyService
-                    .shortenTheUrl(request.getUrl(), request.getRedirectType(), loggedInUserAccountId);
+            String hashedUrl = shortyService.shortenTheUrl(
+                    request.getUrl(),
+                    request.getRedirectType(),
+                    authenticationService.getLoggedInUsersAccountId());
 
             response.setShortUrl(HTTP_SHORTY_COM + hashedUrl); //pretpostavka da nam je to domena
 

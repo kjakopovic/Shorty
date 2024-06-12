@@ -1,6 +1,7 @@
 package asee.asee.unit;
 
 import asee.asee.administration.services.AuthenticationService;
+import asee.asee.exceptions.ShortyException;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -40,7 +41,7 @@ public class AuthenticationServiceTests {
         .thenThrow(new BadCredentialsException(exceptionMessage));
 
         //Act & Assert
-        Assertions.assertThrows(AuthenticationException.class,
+        Assertions.assertThrows(ShortyException.class,
                 () -> authenticationService.loginUser(accountId, password),
                 exceptionMessage);
     }
@@ -57,7 +58,11 @@ public class AuthenticationServiceTests {
         .thenReturn(authentication);
 
         //Act
-        authenticationService.loginUser(accountId, password);
+        try {
+            authenticationService.loginUser(accountId, password);
+        } catch (ShortyException e) {
+            throw new RuntimeException(e);
+        }
 
         String resultAccountId = SecurityContextHolder.getContext().getAuthentication().getName();
 
