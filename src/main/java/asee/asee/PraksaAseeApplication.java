@@ -5,9 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+//TODO: popraviti stare testove
+//TODO: napraviti testove za DAO
+//TODO: dodati transakcije u slucaju failurea
+
 @SpringBootApplication
-@EnableJpaRepositories("asee.asee.administration.repositories")
-@EntityScan("asee.asee.administration.models")
+@EnableJpaRepositories("asee.asee.adapters.out.postgres.repositories")
+@EntityScan("asee.asee.adapters.out.postgres.entities")
 public class PraksaAseeApplication {
     //default swagger route: http://localhost:8000/swagger-ui/index.html
     public static void main(String[] args) {
