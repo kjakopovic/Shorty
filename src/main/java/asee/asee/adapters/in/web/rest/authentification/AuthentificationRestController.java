@@ -9,6 +9,8 @@ import asee.asee.application.authentification.service.UserService;
 import asee.asee.application.exceptions.ShortyException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,9 +57,12 @@ public class AuthentificationRestController {
 
             response.setSuccess(true);
             return ResponseEntity.ok(response);
-        } catch (ShortyException e) {
+        } catch (ShortyException | AuthenticationException e) {
             response.setSuccess(false);
             return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            response.setSuccess(false);
+            return ResponseEntity.internalServerError().body(response);
         }
     }
 }

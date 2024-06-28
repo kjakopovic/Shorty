@@ -1,15 +1,14 @@
-package asee.asee.unit;
+package asee.asee.unit.service;
 
-import asee.asee.administration.models.Shorty;
-import asee.asee.administration.models.UserEntity;
-import asee.asee.administration.models.UserShorty;
-import asee.asee.administration.models.UserShortyId;
-import asee.asee.administration.repositories.IShortyRepository;
-import asee.asee.administration.repositories.IUserRepository;
-import asee.asee.administration.repositories.IUserShortyRepository;
-import asee.asee.administration.responseDtos.ResolvedHashResponse;
-import asee.asee.administration.services.ShortyService;
-import asee.asee.exceptions.ShortyException;
+import asee.asee.application.authentification.dao.IUserDAO;
+import asee.asee.application.authentification.model.UserModel;
+import asee.asee.application.exceptions.ShortyException;
+import asee.asee.application.shorty.dao.IShortyDAO;
+import asee.asee.application.shorty.dao.IUserShortyDAO;
+import asee.asee.application.shorty.dto.ResolvedHashResponse;
+import asee.asee.application.shorty.model.ShortyModel;
+import asee.asee.application.shorty.model.UserShortyModel;
+import asee.asee.application.shorty.service.ShortyService;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -35,13 +34,13 @@ public class ShortyServiceTests {
     private PasswordEncoder passwordEncoder;
 
     @MockBean
-    private IShortyRepository shortyRepository;
+    private IShortyDAO shortyDAO;
 
     @MockBean
-    private IUserRepository userRepository;
+    private IUserDAO userDAO;
 
     @MockBean
-    private IUserShortyRepository userShortyRepository;
+    private IUserShortyDAO userShortyDAO;
 
     @Test
     public void shortenTheUrlWhenUserIsNotFoundThrowsException(){
@@ -49,7 +48,7 @@ public class ShortyServiceTests {
         String accountId = "Karlo";
         String exceptionMessage = "User not found";
 
-        when(userRepository.findById(accountId)).thenThrow(new NoSuchElementException(exceptionMessage));
+        when(userDAO.findById(accountId)).thenThrow(new NoSuchElementException(exceptionMessage));
 
         //Act & Assert
         Assertions.assertThrows(Exception.class,
@@ -60,30 +59,30 @@ public class ShortyServiceTests {
     @Test
     public void shortenTheUrlWhenShortyConnectionAlreadyFoundAndSentDifferentRedirectionTypeThrowsException(){
         //Arrange
-        UserEntity user = new UserEntity();
+        var user = new UserModel();
         user.setPassword("password1");
         user.setAccountId("Karlo");
 
-        Shorty shorty = new Shorty();
+        var shorty = new ShortyModel();
         shorty.setHashedUrl("HashedUrl");
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(301);
         shorty.setId(1);
 
-        Shorty shorty2 = new Shorty();
+        var shorty2 = new ShortyModel();
         shorty2.setHashedUrl("HashedUrl");
         shorty2.setOriginalUrl("Url");
         shorty2.setRedirectionType(302);
         shorty2.setId(2);
 
-        List<Shorty> shorties = new ArrayList<>();
+        List<ShortyModel> shorties = new ArrayList<>();
         shorties.add(shorty);
         shorties.add(shorty2);
 
-        when(userRepository.findById(user.getAccountId())).thenReturn(Optional.of(user));
-        when(shortyRepository.findShortiesByOriginalUrl(shorty.getOriginalUrl()))
+        when(userDAO.findById(user.getAccountId())).thenReturn(user);
+        when(shortyDAO.findShortiesByOriginalUrl(shorty.getOriginalUrl()))
                 .thenReturn(shorties);
-        when(userShortyRepository
+        when(userShortyDAO
                 .existsByUserEntityAccountIdAndShortyOriginalUrl(user.getAccountId(), shorty.getOriginalUrl()))
                 .thenReturn(true);
 
@@ -96,23 +95,23 @@ public class ShortyServiceTests {
     @Test
     public void shortenTheUrlWhenShortyConnectionAlreadyFoundAndSentCorrectRedirectionTypeReturnsHashedUrl() {
         //Arrange
-        UserEntity user = new UserEntity();
+        var user = new UserModel();
         user.setPassword("password1");
         user.setAccountId("Karlo");
 
-        Shorty shorty = new Shorty();
+        var shorty = new ShortyModel();
         shorty.setHashedUrl("HashedUrl");
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(301);
         shorty.setId(1);
 
-        List<Shorty> shorties = new ArrayList<>();
+        List<ShortyModel> shorties = new ArrayList<>();
         shorties.add(shorty);
 
-        when(userRepository.findById(user.getAccountId())).thenReturn(Optional.of(user));
-        when(shortyRepository.findShortiesByOriginalUrl(shorty.getOriginalUrl()))
+        when(userDAO.findById(user.getAccountId())).thenReturn(user);
+        when(shortyDAO.findShortiesByOriginalUrl(shorty.getOriginalUrl()))
                 .thenReturn(shorties);
-        when(userShortyRepository
+        when(userShortyDAO
                 .existsByUserEntityAccountIdAndShortyOriginalUrl(user.getAccountId(), shorty.getOriginalUrl()))
                 .thenReturn(true);
 
@@ -132,23 +131,23 @@ public class ShortyServiceTests {
     @Test
     public void shortenTheUrlWhenShortyConnectionNotFoundAndSentCorrectRedirectionTypeReturnsHashedUrl() {
         //Arrange
-        UserEntity user = new UserEntity();
+        var user = new UserModel();
         user.setPassword("password1");
         user.setAccountId("Karlo");
 
-        Shorty shorty = new Shorty();
+        var shorty = new ShortyModel();
         shorty.setHashedUrl("HashedUrl");
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(301);
         shorty.setId(1);
 
-        List<Shorty> shorties = new ArrayList<>();
+        List<ShortyModel> shorties = new ArrayList<>();
         shorties.add(shorty);
 
-        when(userRepository.findById(user.getAccountId())).thenReturn(Optional.of(user));
-        when(shortyRepository.findShortiesByOriginalUrl(shorty.getOriginalUrl()))
+        when(userDAO.findById(user.getAccountId())).thenReturn(user);
+        when(shortyDAO.findShortiesByOriginalUrl(shorty.getOriginalUrl()))
                 .thenReturn(shorties);
-        when(userShortyRepository
+        when(userShortyDAO
                 .existsByUserEntityAccountIdAndShortyOriginalUrl(user.getAccountId(), shorty.getOriginalUrl()))
                 .thenReturn(false);
 
@@ -168,23 +167,23 @@ public class ShortyServiceTests {
     @Test
     public void shortenTheUrlWhenShortyConnectionNotFoundAndSentNewRedirectionTypeReturnsNewHashedUrl() {
         //Arrange
-        UserEntity user = new UserEntity();
+        var user = new UserModel();
         user.setPassword("password1");
         user.setAccountId("Karlo");
 
-        Shorty shorty = new Shorty();
+        var shorty = new ShortyModel();
         shorty.setHashedUrl("HashedUrl");
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(302);
         shorty.setId(1);
 
-        List<Shorty> shorties = new ArrayList<>();
+        List<ShortyModel> shorties = new ArrayList<>();
         shorties.add(shorty);
 
-        when(userRepository.findById(user.getAccountId())).thenReturn(Optional.of(user));
-        when(shortyRepository.findShortiesByOriginalUrl(shorty.getOriginalUrl()))
+        when(userDAO.findById(user.getAccountId())).thenReturn(user);
+        when(shortyDAO.findShortiesByOriginalUrl(shorty.getOriginalUrl()))
                 .thenReturn(shorties);
-        when(userShortyRepository
+        when(userShortyDAO
                 .existsByUserEntityAccountIdAndShortyOriginalUrl(user.getAccountId(), shorty.getOriginalUrl()))
                 .thenReturn(false);
         when(passwordEncoder.encode(shorty.getOriginalUrl()))
@@ -208,17 +207,17 @@ public class ShortyServiceTests {
         //Arrange
         String errorMessage = "Shorty not found!";
 
-        UserEntity user = new UserEntity();
+        var user = new UserModel();
         user.setPassword("password1");
         user.setAccountId("Karlo");
 
-        Shorty shorty = new Shorty();
+        var shorty = new ShortyModel();
         shorty.setHashedUrl("HashedUrl");
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(302);
         shorty.setId(1);
 
-        when(shortyRepository.findByHashedUrl(shorty.getHashedUrl()))
+        when(shortyDAO.findByHashedUrl(shorty.getHashedUrl()))
                 .thenThrow(new NoSuchElementException(errorMessage));
 
         //Act & Assert
@@ -232,22 +231,20 @@ public class ShortyServiceTests {
         //Arrange
         String errorMessage = "Connection not found!";
 
-        UserEntity user = new UserEntity();
+        var user = new UserModel();
         user.setPassword("password1");
         user.setAccountId("Karlo");
 
-        Shorty shorty = new Shorty();
+        var shorty = new ShortyModel();
         shorty.setHashedUrl("HashedUrl");
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(302);
         shorty.setId(1);
 
-        UserShortyId userShortyId = new UserShortyId(user.getAccountId(), shorty.getId());
+        when(shortyDAO.findByHashedUrl(shorty.getHashedUrl()))
+                .thenReturn(shorty);
 
-        when(shortyRepository.findByHashedUrl(shorty.getHashedUrl()))
-                .thenReturn(Optional.of(shorty));
-
-        when(userShortyRepository.findById(userShortyId))
+        when(userShortyDAO.findByUserShortyId(user.getAccountId(), shorty.getId()))
                 .thenThrow(new NoSuchElementException(errorMessage));
 
         //Act & Assert
@@ -259,29 +256,28 @@ public class ShortyServiceTests {
     @Test
     public void resolveTheHashedUrlCorrectResponse() {
         //Arrange
-        UserEntity user = new UserEntity();
+        var user = new UserModel();
         user.setPassword("password1");
         user.setAccountId("Karlo");
 
-        Shorty shorty = new Shorty();
+        var shorty = new ShortyModel();
         shorty.setHashedUrl("HashedUrl");
         shorty.setOriginalUrl("Url");
         shorty.setRedirectionType(302);
         shorty.setId(1);
 
-        UserShorty userShorty = new UserShorty();
-        userShorty.setId(new UserShortyId(user.getAccountId(), shorty.getId()));
+        var userShorty = new UserShortyModel();
         userShorty.setShorty(shorty);
-        userShorty.setUserEntity(user);
+        userShorty.setUser(user);
         userShorty.setCounter(0);
 
-        ResolvedHashResponse response = new ResolvedHashResponse(shorty.getOriginalUrl(), shorty.getRedirectionType());
+        var response = new ResolvedHashResponse(shorty.getOriginalUrl(), shorty.getRedirectionType());
 
-        when(shortyRepository.findByHashedUrl(shorty.getHashedUrl()))
-                .thenReturn(Optional.of(shorty));
+        when(shortyDAO.findByHashedUrl(shorty.getHashedUrl()))
+                .thenReturn(shorty);
 
-        when(userShortyRepository.findById(any()))
-                .thenReturn(Optional.of(userShorty));
+        when(userShortyDAO.findByUserShortyId(any(), any()))
+                .thenReturn(userShorty);
 
         //Act
         ResolvedHashResponse result;
@@ -300,7 +296,7 @@ public class ShortyServiceTests {
         //Arrange
         Map<String, Integer> response = new HashMap<>();
 
-        when(userShortyRepository.findAllByUserEntityAccountIdWithShorty(any()))
+        when(userShortyDAO.findAllByUserEntityAccountIdWithShorty(any()))
                 .thenReturn(Collections.emptyList());
 
         //Act
@@ -313,47 +309,44 @@ public class ShortyServiceTests {
     @Test
     public void getUsersShortyStatisticsReturnsPopulatedListResponse() {
         //Arrange
-        UserEntity user = new UserEntity();
+        var user = new UserModel();
         user.setPassword("password1");
         user.setAccountId("Karlo");
 
-        Shorty shorty1 = new Shorty();
+        var shorty1 = new ShortyModel();
         shorty1.setHashedUrl("HashedUrl");
         shorty1.setOriginalUrl("Url");
         shorty1.setRedirectionType(302);
         shorty1.setId(1);
 
-        Shorty shorty2 = new Shorty();
+        var shorty2 = new ShortyModel();
         shorty2.setHashedUrl("HashedUrl2");
         shorty2.setOriginalUrl("Url2");
         shorty2.setRedirectionType(301);
         shorty2.setId(2);
 
-        Shorty shorty3 = new Shorty();
+        var shorty3 = new ShortyModel();
         shorty3.setHashedUrl("HashedUrl3");
         shorty3.setOriginalUrl("Url3");
         shorty3.setRedirectionType(302);
         shorty3.setId(3);
 
-        UserShorty userShorty1 = new UserShorty();
-        userShorty1.setId(new UserShortyId(user.getAccountId(), 1));
+        var userShorty1 = new UserShortyModel();
         userShorty1.setShorty(shorty1);
-        userShorty1.setUserEntity(user);
+        userShorty1.setUser(user);
         userShorty1.setCounter(0);
 
-        UserShorty userShorty2 = new UserShorty();
-        userShorty2.setId(new UserShortyId(user.getAccountId(), 2));
+        var userShorty2 = new UserShortyModel();
         userShorty2.setShorty(shorty2);
-        userShorty2.setUserEntity(user);
+        userShorty2.setUser(user);
         userShorty2.setCounter(5);
 
-        UserShorty userShorty3 = new UserShorty();
-        userShorty3.setId(new UserShortyId(user.getAccountId(), 3));
+        var userShorty3 = new UserShortyModel();
         userShorty3.setShorty(shorty3);
-        userShorty3.setUserEntity(user);
+        userShorty3.setUser(user);
         userShorty3.setCounter(100);
 
-        List<UserShorty> usershorties = new ArrayList<>();
+        List<UserShortyModel> usershorties = new ArrayList<>();
         usershorties.add(userShorty1);
         usershorties.add(userShorty2);
         usershorties.add(userShorty3);
@@ -364,7 +357,7 @@ public class ShortyServiceTests {
         response.put(shorty2.getOriginalUrl(), userShorty2.getCounter());
         response.put(shorty3.getOriginalUrl(), userShorty3.getCounter());
 
-        when(userShortyRepository.findAllByUserEntityAccountIdWithShorty(any()))
+        when(userShortyDAO.findAllByUserEntityAccountIdWithShorty(any()))
                 .thenReturn(usershorties);
 
         //Act

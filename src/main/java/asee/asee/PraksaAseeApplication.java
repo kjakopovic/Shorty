@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-//TODO: popraviti stare testove
 //TODO: napraviti testove za DAO
 //TODO: dodati transakcije u slucaju failurea
 

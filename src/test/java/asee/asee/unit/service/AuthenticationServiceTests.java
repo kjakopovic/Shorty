@@ -1,7 +1,7 @@
-package asee.asee.unit;
+package asee.asee.unit.service;
 
-import asee.asee.administration.services.AuthenticationService;
-import asee.asee.exceptions.ShortyException;
+import asee.asee.application.authentification.service.AuthenticationService;
+import asee.asee.application.exceptions.ShortyException;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -11,8 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -32,9 +30,9 @@ public class AuthenticationServiceTests {
     @Test
     public void loginUserThrowsException(){
         //Arrange
-        String accountId = "accountId";
-        String password = "password";
-        String exceptionMessage = "Bad Credentials";
+        var accountId = "accountId";
+        var password = "password";
+        var exceptionMessage = "Bad Credentials";
 
         when(authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(accountId, password)))
@@ -49,9 +47,9 @@ public class AuthenticationServiceTests {
     @Test
     public void loginUserLogsTheUserIn(){
         //Arrange
-        String accountId = "accountId";
-        String password = "password";
-        Authentication authentication = new UsernamePasswordAuthenticationToken(accountId, password);
+        var accountId = "accountId";
+        var password = "password";
+        var authentication = new UsernamePasswordAuthenticationToken(accountId, password);
 
         when(authenticationManager
                 .authenticate(authentication))
@@ -64,7 +62,7 @@ public class AuthenticationServiceTests {
             throw new RuntimeException(e);
         }
 
-        String resultAccountId = SecurityContextHolder.getContext().getAuthentication().getName();
+        var resultAccountId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //Assert
         Assertions.assertEquals(accountId, resultAccountId);
@@ -76,7 +74,7 @@ public class AuthenticationServiceTests {
         //Arrange
 
         //Act
-        String resultAccountId = authenticationService.getLoggedInUsersAccountId();
+        var resultAccountId = authenticationService.getLoggedInUsersAccountId();
 
         //Assert
         Assertions.assertEquals("RandomUser", resultAccountId);

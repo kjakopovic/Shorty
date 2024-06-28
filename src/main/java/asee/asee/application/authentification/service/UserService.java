@@ -93,11 +93,11 @@ public class UserService {
             logger.info("Trying to find user with account id {}.", accountId);
             user = userDao.findById(accountId);
         }catch (NoSuchElementException e){
-            throw new ShortyException("User with account id {} does not exist or incorrect password!", accountId);
+            throw new ShortyException("User with account id {} does not exist or incorrect credentials!", accountId);
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())){
-            throw new ShortyException("User with account id {} does not exist or incorrect password!", accountId);
+            throw new ShortyException("User with account id {} does not exist or incorrect credentials!", accountId);
         }
     }
 }
