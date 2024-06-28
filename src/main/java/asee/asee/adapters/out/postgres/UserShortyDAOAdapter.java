@@ -23,7 +23,7 @@ public class UserShortyDAOAdapter implements IUserShortyDAO {
 
     @Override
     public void save(UserShortyModel userShortyModel) {
-        userShortyRepository.save(Converters.ConvertUserShortyModelToUserShortyEntity(userShortyModel));
+        userShortyRepository.save(Converters.convertUserShortyModelToUserShortyEntity(userShortyModel));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class UserShortyDAOAdapter implements IUserShortyDAO {
 
         var userShorty = userShortyRepository.findById(userShortyId).orElseThrow();
 
-        return Converters.ConvertUserShortyEntityToUserShortyModel(userShorty);
+        return Converters.convertUserShortyEntityToUserShortyModel(userShorty);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserShortyDAOAdapter implements IUserShortyDAO {
 
         return userShorties
                 .stream()
-                .map(Converters::ConvertUserShortyEntityToUserShortyModel)
+                .map(Converters::convertUserShortyEntityToUserShortyModel)
                 .toList();
     }
 }

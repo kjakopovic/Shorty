@@ -9,7 +9,7 @@ import asee.asee.application.shorty.model.ShortyModel;
 import asee.asee.application.shorty.model.UserShortyModel;
 
 public class Converters {
-    public static UserModel ConvertUserEntityToUserModel(UserEntity entity){
+    public static UserModel convertUserEntityToUserModel(UserEntity entity){
         var userModel = new UserModel();
 
         userModel.setAccountId(entity.getAccountId());
@@ -18,7 +18,7 @@ public class Converters {
         return userModel;
     }
 
-    public static UserEntity ConvertUserModelToUserEntity(UserModel model){
+    public static UserEntity convertUserModelToUserEntity(UserModel model){
         UserEntity userEntity = new UserEntity();
 
         userEntity.setAccountId(model.getAccountId());
@@ -27,7 +27,7 @@ public class Converters {
         return userEntity;
     }
 
-    public static ShortyModel ConvertShortyEntityToShortyModel(Shorty entity){
+    public static ShortyModel convertShortyEntityToShortyModel(Shorty entity){
         var shortyModel = new ShortyModel();
 
         shortyModel.setId(entity.getId());
@@ -38,7 +38,7 @@ public class Converters {
         return shortyModel;
     }
 
-    public static Shorty ConvertShortyModelToShortyEntity(ShortyModel model){
+    public static Shorty convertShortyModelToShortyEntity(ShortyModel model){
         var shortyEntity = new Shorty();
 
         shortyEntity.setOriginalUrl(model.getOriginalUrl());
@@ -49,24 +49,24 @@ public class Converters {
         return shortyEntity;
     }
 
-    public static UserShortyModel ConvertUserShortyEntityToUserShortyModel(UserShorty entity){
+    public static UserShortyModel convertUserShortyEntityToUserShortyModel(UserShorty entity){
         var userShortyModel = new UserShortyModel();
 
         userShortyModel.setCounter(entity.getCounter());
-        userShortyModel.setUser(ConvertUserEntityToUserModel(entity.getUserEntity()));
-        userShortyModel.setShorty(ConvertShortyEntityToShortyModel(entity.getShorty()));
+        userShortyModel.setUser(convertUserEntityToUserModel(entity.getUserEntity()));
+        userShortyModel.setShorty(convertShortyEntityToShortyModel(entity.getShorty()));
 
         return userShortyModel;
     }
 
-    public static UserShorty ConvertUserShortyModelToUserShortyEntity(UserShortyModel model){
+    public static UserShorty convertUserShortyModelToUserShortyEntity(UserShortyModel model){
         var userShortyId = new UserShortyId(model.getUser().getAccountId(), model.getShorty().getId());
 
         var userShorty = new UserShorty();
         userShorty.setId(userShortyId);
         userShorty.setCounter(model.getCounter());
-        userShorty.setUserEntity(ConvertUserModelToUserEntity(model.getUser()));
-        userShorty.setShorty(ConvertShortyModelToShortyEntity(model.getShorty()));
+        userShorty.setUserEntity(convertUserModelToUserEntity(model.getUser()));
+        userShorty.setShorty(convertShortyModelToShortyEntity(model.getShorty()));
 
         return userShorty;
     }

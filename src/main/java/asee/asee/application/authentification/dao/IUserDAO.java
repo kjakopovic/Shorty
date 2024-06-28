@@ -9,7 +9,7 @@ public interface IUserDAO {
 
     boolean existsById(String accountId);
 
-    void save(UserModel user);
+    String save(UserModel user);
 
     UserModel findById(String accountId) throws NoSuchElementException;
 }

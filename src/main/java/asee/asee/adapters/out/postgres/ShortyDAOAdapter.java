@@ -21,13 +21,13 @@ public class ShortyDAOAdapter implements IShortyDAO {
 
         return shorties
                 .stream()
-                .map(Converters::ConvertShortyEntityToShortyModel)
+                .map(Converters::convertShortyEntityToShortyModel)
                 .toList();
     }
 
     @Override
     public Integer save(ShortyModel shorty) {
-        var shortyEntity = Converters.ConvertShortyModelToShortyEntity(shorty);
+        var shortyEntity = Converters.convertShortyModelToShortyEntity(shorty);
 
         shortyRepository.save(shortyEntity);
 
@@ -38,6 +38,6 @@ public class ShortyDAOAdapter implements IShortyDAO {
     public ShortyModel findByHashedUrl(String hashedUrl) throws NoSuchElementException {
         var shortyEntity = shortyRepository.findByHashedUrl(hashedUrl).orElseThrow();
 
-        return Converters.ConvertShortyEntityToShortyModel(shortyEntity);
+        return Converters.convertShortyEntityToShortyModel(shortyEntity);
     }
 }

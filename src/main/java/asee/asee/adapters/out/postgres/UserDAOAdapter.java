@@ -27,14 +27,18 @@ public class UserDAOAdapter implements IUserDAO {
     }
 
     @Override
-    public void save(UserModel user) {
-        userRepository.save(Converters.ConvertUserModelToUserEntity(user));
+    public String save(UserModel user) {
+        var userEntity = Converters.convertUserModelToUserEntity(user);
+
+        userRepository.save(userEntity);
+
+        return userEntity.getAccountId();
     }
 
     @Override
     public UserModel findById(String accountId) throws NoSuchElementException {
         UserEntity userEntity = userRepository.findById(accountId).orElseThrow();
 
-        return Converters.ConvertUserEntityToUserModel(userEntity);
+        return Converters.convertUserEntityToUserModel(userEntity);
     }
 }
