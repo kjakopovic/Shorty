@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-//TODO: dodati transakcije u slucaju failurea
-
 @SpringBootApplication
 @EnableJpaRepositories("asee.asee.adapters.out.postgres.repositories")
 @EntityScan("asee.asee.adapters.out.postgres.entities")

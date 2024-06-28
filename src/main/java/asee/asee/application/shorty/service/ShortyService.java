@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -27,6 +28,7 @@ public class ShortyService {
     private final IUserDAO userDao;
     private final IUserShortyDAO userShortyDao;
 
+    @Transactional
     public String shortenTheUrl(String url, int redirectionType, String accountId) throws ShortyException {
         logger.info("Starting to shorten the url.");
 
@@ -124,6 +126,7 @@ public class ShortyService {
         }
     }
 
+    @Transactional
     public ResolvedHashResponse resolveTheHashedUrl(String hashedUrl, String accountId) throws ShortyException {
         logger.info("Received shortened URL.");
 
@@ -155,6 +158,7 @@ public class ShortyService {
         return new ResolvedHashResponse(shorty.getOriginalUrl(), shorty.getRedirectionType());
     }
 
+    @Transactional(readOnly = true)
     public Map<String, Integer> getUsersShortyStatistics(String accountId){
         logger.info("Starting to get users statistics.");
         Map<String, Integer> redirects = new HashMap<>();
