@@ -141,21 +141,10 @@ public class ShortyRestControllerTests {
     @Test
     public void shortenTheUrlWhenNotAuthenticatedReturnsStatus401Unauthorized() {
         try {
-            //TODO: brisi ili uncomment
-//            var errorMessage = "There was a mistake!";
-//
             var request = new ShortyRequest();
 
             request.setUrl("https://google.com");
             request.setRedirectType(301);
-//
-//            var response = new ShortyResponse();
-//
-//            response.setShortUrl(null);
-//            response.setDescription(errorMessage);
-//
-//            when(shortyService.shortenTheUrl(request.getUrl(), request.getRedirectType(), "RandomUser"))
-//                    .thenThrow(new ShortyException(errorMessage));
 
             mvc.perform(post("/short")
                             .contentType(MediaType.APPLICATION_JSON)
