@@ -4,14 +4,12 @@ import asee.asee.application.authentification.dao.IUserDAO;
 import asee.asee.application.authentification.model.UserModel;
 import asee.asee.application.authentification.service.UserService;
 import asee.asee.application.exceptions.ShortyException;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
@@ -19,7 +17,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserServiceTests {
     @Autowired

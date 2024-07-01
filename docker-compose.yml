@@ -18,3 +18,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/Praksa
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+
+  test:
+    image: shorty-image
+    container_name: shorty-test
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/Praksa
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    entrypoint: ["mvn", "test"]

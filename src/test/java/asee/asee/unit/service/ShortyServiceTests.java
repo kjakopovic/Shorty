@@ -9,21 +9,18 @@ import asee.asee.application.shorty.dto.ResolvedHashResponse;
 import asee.asee.application.shorty.model.ShortyModel;
 import asee.asee.application.shorty.model.UserShortyModel;
 import asee.asee.application.shorty.service.ShortyService;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ShortyServiceTests {
 
