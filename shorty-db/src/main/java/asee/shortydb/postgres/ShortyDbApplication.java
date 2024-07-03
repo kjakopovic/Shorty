@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"asee.shortydb"})
 @EnableJpaRepositories(basePackages = "asee.shortydb")
 @EntityScan(basePackages = "asee.shortydb")
 public class ShortyDbApplication {

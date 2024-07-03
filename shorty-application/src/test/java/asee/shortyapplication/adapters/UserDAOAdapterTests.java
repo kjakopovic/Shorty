@@ -1,7 +1,6 @@
 package asee.shortyapplication.adapters;
 
 import asee.shortyapplication.ShortyApplication;
-import asee.shortyapplication.TestConfig;
 import asee.shortyapplication.authentication.dao.IUserDAO;
 import asee.shortycore.models.authentication.UserModel;
 import asee.shortydb.postgres.entities.UserEntity;
@@ -20,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {ShortyApplication.class, TestConfig.class})
+@SpringBootTest(classes = ShortyApplication.class)
 public class UserDAOAdapterTests {
     @Autowired
     private IUserDAO userDAO;

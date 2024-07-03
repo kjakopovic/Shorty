@@ -1,4 +1,4 @@
-package asee.shortydb;
+package asee.shortydb.utils;
 
 import asee.shortycore.models.authentication.UserModel;
 import asee.shortycore.models.shorty.ShortyModel;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes = {ShortyDbApplication.class, TestConfig.class})
+@SpringBootTest(classes = ShortyDbApplication.class)
 public class ConvertersTests {
     @Autowired
     private IConverters converters;

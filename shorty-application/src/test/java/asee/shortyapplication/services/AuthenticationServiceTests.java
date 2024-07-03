@@ -1,7 +1,6 @@
 package asee.shortyapplication.services;
 
 import asee.shortyapplication.ShortyApplication;
-import asee.shortyapplication.TestConfig;
 import asee.shortyapplication.authentication.interfaces.IAuthenticationService;
 import asee.shortycore.exceptions.ShortyException;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {ShortyApplication.class, TestConfig.class})
+@SpringBootTest(classes = ShortyApplication.class)
 public class AuthenticationServiceTests {
 
     @MockBean

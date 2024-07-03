@@ -1,7 +1,6 @@
 package asee.shortyapplication.services;
 
 import asee.shortyapplication.ShortyApplication;
-import asee.shortyapplication.TestConfig;
 import asee.shortyapplication.authentication.dao.IUserDAO;
 import asee.shortyapplication.shorty.dao.IShortyDAO;
 import asee.shortyapplication.shorty.dao.IUserShortyDAO;
@@ -23,7 +22,7 @@ import java.util.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {ShortyApplication.class, TestConfig.class})
+@SpringBootTest(classes = ShortyApplication.class)
 public class ShortyServiceTests {
 
     @Autowired

@@ -2,7 +2,6 @@ package asee.shortyapi;
 
 import asee.shortyapi.shorty.request.ShortyRequest;
 import asee.shortyapi.shorty.response.ShortyResponse;
-import asee.shortyapplication.ShortyApplication;
 import asee.shortyapplication.shorty.dto.ResolvedHashResponse;
 import asee.shortyapplication.shorty.interfaces.IShortyService;
 import asee.shortycore.exceptions.ShortyException;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
-        classes = {ShortyApiApplication.class, TestConfig.class})
+        classes = ShortyApiApplication.class)
 @AutoConfigureMockMvc
 public class ShortyRestControllerTests {
     @Autowired

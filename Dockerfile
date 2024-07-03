@@ -6,9 +6,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN mvn clean package -DskipTests
+RUN mvn clean install -DskipTests
 
-EXPOSE 8000
+EXPOSE 80
 EXPOSE 5432
 
-CMD ["java", "-jar", "shorty-api/target/asee-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "shorty-api/target/shorty-api-0.0.1-SNAPSHOT.jar"]
