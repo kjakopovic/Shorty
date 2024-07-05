@@ -1,8 +1,14 @@
 FROM openjdk:17-jdk-alpine
 
-COPY ./target/asee-0.0.1-SNAPSHOT.jar app.jar
+RUN apk add --no-cache maven
 
-EXPOSE 8000
+WORKDIR /app
+
+COPY . .
+
+RUN mvn clean install -DskipTests
+
+EXPOSE 80
 EXPOSE 5432
 
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "shorty-api/target/shorty-api-0.0.1-SNAPSHOT.jar"]

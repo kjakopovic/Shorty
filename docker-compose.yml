@@ -5,7 +5,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: Praksa
+      POSTGRES_DB: shorty
 
   app:
     image: shorty-image
@@ -13,8 +13,20 @@ services:
     depends_on:
       - db
     ports:
-      - "80:8000"
+      - "80:80"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/Praksa
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shorty
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+    entrypoint: ["java", "-jar", "shorty-api/target/shorty-api-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=dev"]
+
+  test:
+    image: shorty-image
+    container_name: shorty-test
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shorty
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    entrypoint: ["mvn", "test", "-f", "pom.xml"]

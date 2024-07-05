@@ -1,0 +1,28 @@
+name: Run tests on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build a docker image
+        run: docker build -t shorty-image .
+
+      - name: Compose a docker env
+        run: docker-compose up -d db app
+
+      - name: Run tests in docker env
+        run: docker-compose run test
