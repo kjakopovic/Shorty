@@ -8,7 +8,6 @@ COPY . .
 
 RUN mvn clean install -DskipTests
 
-EXPOSE 80
-EXPOSE 5432
+EXPOSE 7777
 
 CMD ["java", "-jar", "shorty-api/target/shorty-api-0.0.1-SNAPSHOT.jar"]

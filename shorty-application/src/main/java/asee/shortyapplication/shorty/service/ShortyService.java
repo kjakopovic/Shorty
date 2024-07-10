@@ -1,6 +1,6 @@
 package asee.shortyapplication.shorty.service;
 
-import asee.shortyapplication.authentication.dao.IUserDAO;
+import asee.shortyapplication.shorty.dao.IUserDAO;
 import asee.shortyapplication.shorty.dao.IShortyDAO;
 import asee.shortyapplication.shorty.dao.IUserShortyDAO;
 import asee.shortyapplication.shorty.dto.ResolvedHashResponse;
@@ -99,7 +99,7 @@ public class ShortyService implements IShortyService {
             logger.info("Original URL doesn't exist already.");
 
             String hashedUrl = passwordEncoder.encode(url)
-                    .replaceAll("[/:?&=#]", "X")
+                    .replaceAll("[/:?&=#.,;]", "X")
                     .substring(40, 45);
 
             logger.info("Making new shorty.");

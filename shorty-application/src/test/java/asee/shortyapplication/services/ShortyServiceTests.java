@@ -1,7 +1,7 @@
 package asee.shortyapplication.services;
 
 import asee.shortyapplication.ShortyApplication;
-import asee.shortyapplication.authentication.dao.IUserDAO;
+import asee.shortyapplication.shorty.dao.IUserDAO;
 import asee.shortyapplication.shorty.dao.IShortyDAO;
 import asee.shortyapplication.shorty.dao.IUserShortyDAO;
 import asee.shortyapplication.shorty.dto.ResolvedHashResponse;
@@ -58,7 +58,6 @@ public class ShortyServiceTests {
     public void shortenTheUrlWhenShortyConnectionAlreadyFoundAndSentDifferentRedirectionTypeThrowsException(){
         //Arrange
         var user = new UserModel();
-        user.setPassword("password1");
         user.setAccountId("Karlo");
 
         var shorty = new ShortyModel();
@@ -94,7 +93,6 @@ public class ShortyServiceTests {
     public void shortenTheUrlWhenShortyConnectionAlreadyFoundAndSentCorrectRedirectionTypeReturnsHashedUrl() {
         //Arrange
         var user = new UserModel();
-        user.setPassword("password1");
         user.setAccountId("Karlo");
 
         var shorty = new ShortyModel();
@@ -130,7 +128,6 @@ public class ShortyServiceTests {
     public void shortenTheUrlWhenShortyConnectionNotFoundAndSentCorrectRedirectionTypeReturnsHashedUrl() {
         //Arrange
         var user = new UserModel();
-        user.setPassword("password1");
         user.setAccountId("Karlo");
 
         var shorty = new ShortyModel();
@@ -166,7 +163,6 @@ public class ShortyServiceTests {
     public void shortenTheUrlWhenShortyConnectionNotFoundAndSentNewRedirectionTypeReturnsNewHashedUrl() {
         //Arrange
         var user = new UserModel();
-        user.setPassword("password1");
         user.setAccountId("Karlo");
 
         var shorty = new ShortyModel();
@@ -206,7 +202,6 @@ public class ShortyServiceTests {
         String errorMessage = "Shorty not found!";
 
         var user = new UserModel();
-        user.setPassword("password1");
         user.setAccountId("Karlo");
 
         var shorty = new ShortyModel();
@@ -230,7 +225,6 @@ public class ShortyServiceTests {
         String errorMessage = "Connection not found!";
 
         var user = new UserModel();
-        user.setPassword("password1");
         user.setAccountId("Karlo");
 
         var shorty = new ShortyModel();
@@ -255,7 +249,6 @@ public class ShortyServiceTests {
     public void resolveTheHashedUrlCorrectResponse() {
         //Arrange
         var user = new UserModel();
-        user.setPassword("password1");
         user.setAccountId("Karlo");
 
         var shorty = new ShortyModel();
@@ -309,7 +302,6 @@ public class ShortyServiceTests {
     public void getUsersShortyStatisticsReturnsPopulatedListResponse() {
         //Arrange
         var user = new UserModel();
-        user.setPassword("password1");
         user.setAccountId("Karlo");
 
         var shorty1 = new ShortyModel();

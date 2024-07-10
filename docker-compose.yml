@@ -1,32 +1,60 @@
+version: '3.9'
+
 services:
   db:
     image: postgres:alpine
+    container_name: shorty-postgres
     ports:
       - "5432:5432"
+    networks:
+      - backend
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: shorty
 
-  app:
+  keycloak:
+    container_name: shorty-keycloak
+    depends_on:
+      - backend_app
+      - keycloak_db
+    image: quay.io/keycloak/keycloak:25.0.1
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: ["start-dev"]
+
+  backend_app:
     image: shorty-image
     container_name: shorty
     depends_on:
       - db
     ports:
-      - "80:80"
+      - "7777:8000"
+    networks:
+      - backend
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shorty
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      JWT_ISSUER_URI: http://keycloak:8080/realms/shorty
     entrypoint: ["java", "-jar", "shorty-api/target/shorty-api-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=dev"]
 
-  test:
+  backend_test:
     image: shorty-image
     container_name: shorty-test
     depends_on:
       - db
+    networks:
+      - backend
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shorty
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     entrypoint: ["mvn", "test", "-f", "pom.xml"]
+
+networks:
+  backend:

@@ -15,7 +15,6 @@ public class Converters implements IConverters {
         var userModel = new UserModel();
 
         userModel.setAccountId(entity.getAccountId());
-        userModel.setPassword(entity.getPassword());
 
         return userModel;
     }
@@ -24,7 +23,6 @@ public class Converters implements IConverters {
         UserEntity userEntity = new UserEntity();
 
         userEntity.setAccountId(model.getAccountId());
-        userEntity.setPassword(model.getPassword());
 
         return userEntity;
     }

@@ -31,11 +31,9 @@ public class ConvertersTests {
     public void setup(){
         userEntity = new UserEntity();
         userEntity.setAccountId("testAccountId");
-        userEntity.setPassword("testPassword");
 
         userModel = new UserModel();
         userModel.setAccountId("testAccountId");
-        userModel.setPassword("testPassword");
 
         shortyEntity = new Shorty();
         shortyEntity.setId(1);
@@ -70,7 +68,6 @@ public class ConvertersTests {
 
         // Assert
         Assertions.assertEquals(userModel.getAccountId(), actualModel.getAccountId());
-        Assertions.assertEquals(userModel.getPassword(), actualModel.getPassword());
     }
 
     @Test
@@ -82,7 +79,6 @@ public class ConvertersTests {
 
         // Assert
         Assertions.assertEquals(userEntity.getAccountId(), actualEntity.getAccountId());
-        Assertions.assertEquals(userEntity.getPassword(), actualEntity.getPassword());
     }
 
     @Test

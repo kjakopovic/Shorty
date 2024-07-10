@@ -31,7 +31,9 @@ public class ShortyDAOAdapter implements IShortyDAO {
     public Integer save(ShortyModel shorty) {
         var shortyEntity = converters.convertShortyModelToShortyEntity(shorty);
 
-        shortyRepository.save(shortyEntity);
+        if(shortyEntity.getId() == null || !shortyRepository.existsById(shortyEntity.getId())){
+            shortyRepository.save(shortyEntity);
+        }
 
         return shortyEntity.getId();
     }

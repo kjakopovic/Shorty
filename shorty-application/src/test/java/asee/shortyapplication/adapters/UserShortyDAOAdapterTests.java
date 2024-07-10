@@ -65,7 +65,6 @@ public class UserShortyDAOAdapterTests {
         //Arrange
         var user = new UserModel();
         user.setAccountId("Karlo");
-        user.setPassword("Pass_123");
 
         var shorty = new ShortyModel();
         shorty.setId(1);
@@ -100,7 +99,6 @@ public class UserShortyDAOAdapterTests {
         //Arrange
         var user = new UserEntity();
         user.setAccountId("Karlo");
-        user.setPassword("Pass_123");
 
         var shorty = new Shorty();
         shorty.setId(1);
@@ -142,7 +140,6 @@ public class UserShortyDAOAdapterTests {
         //Arrange
         var user = new UserEntity();
         user.setAccountId("Karlo");
-        user.setPassword("Pass_123");
 
         var shorty = new Shorty();
         shorty.setId(1);
