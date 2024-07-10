@@ -22,10 +22,10 @@ jobs:
         run: docker build -t shorty-image .
 
       - name: Create a docker volume
-        run: docker volume create --name keycloak-volume
+        run: docker volume create --name keycloak-db-volume
 
       - name: Compose a docker env
-        run: docker-compose up -d db app
+        run: docker-compose up -d db backend_app keycloak
 
       - name: Run tests in docker env
-        run: docker-compose run test
+        run: docker-compose run backend_test

@@ -25,8 +25,6 @@ public class SecurityFilterChainConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(x -> x
-//                        .requestMatchers("/authentication/register").permitAll()
-//                        .requestMatchers("/authentication/login").permitAll()
                         .requestMatchers("/swagger-ui/**").hasRole("client_developer")
                         .requestMatchers("/v3/api-docs/**").hasRole("client_developer")
                         .anyRequest().authenticated())
