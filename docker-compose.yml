@@ -14,9 +14,6 @@ services:
 
   keycloak:
     container_name: shorty-keycloak
-    depends_on:
-      - backend_app
-      - keycloak_db
     image: quay.io/keycloak/keycloak:25.0.1
     ports:
       - "8080:8080"
@@ -25,7 +22,9 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-    command: ["start-dev"]
+      KEYCLOAK_SSL_REQUIRED: none
+    command:
+      - "start-dev"
 
   backend_app:
     image: shorty-image
@@ -33,14 +32,16 @@ services:
     depends_on:
       - db
     ports:
-      - "7777:8000"
+      - "8000:8000"
     networks:
       - backend
+    links:
+      - keycloak
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shorty
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      JWT_ISSUER_URI: http://keycloak:8080/realms/shorty
+      spring.oauth2.resourceserver.jwt.issuer-uri: http://keycloak:8080/realms/shorty
     entrypoint: ["java", "-jar", "shorty-api/target/shorty-api-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=dev"]
 
   backend_test:
@@ -58,3 +59,8 @@ services:
 
 networks:
   backend:
+    driver: bridge
+
+#volumes:
+#  keycloak-db-volume:
+#    external: true

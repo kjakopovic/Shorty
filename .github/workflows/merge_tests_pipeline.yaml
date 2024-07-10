@@ -21,6 +21,9 @@ jobs:
       - name: Build a docker image
         run: docker build -t shorty-image .
 
+      - name: Create a docker volume
+        run: docker volume create --name keycloak-volume
+
       - name: Compose a docker env
         run: docker-compose up -d db app
 
