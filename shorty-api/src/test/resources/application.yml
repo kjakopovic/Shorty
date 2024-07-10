@@ -1,0 +1,17 @@
+jwt:
+  auth:
+    converter:
+      client-id: shorty-rest-api
+      principle-attribute: preferred_username
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shorty
+    username: postgres
+    password: postgres
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/shorty
+          jwk-set-uri: ${spring.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs

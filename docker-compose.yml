@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  db:
+  backend_app_db:
     image: postgres:alpine
     container_name: shorty-postgres
     ports:
@@ -12,6 +12,20 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: shorty
 
+  keycloak_db:
+    image: postgres:alpine
+    container_name: keycloak-postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - backend
+    volumes:
+      - keycloak-db-volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: keycloak
+      POSTGRES_DB: postgresql
+      POSTGRES_PASSWORD: postgres
+
   keycloak:
     container_name: shorty-keycloak
     image: quay.io/keycloak/keycloak:25.0.1
@@ -19,10 +33,18 @@ services:
       - "8080:8080"
     networks:
       - backend
+    depends_on:
+      - keycloak_db
+    links:
+      - keycloak_db
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KEYCLOAK_SSL_REQUIRED: none
+      KC_DB: postgres
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_db:5432/postgresql
     command:
       - "start-dev"
 
@@ -30,7 +52,7 @@ services:
     image: shorty-image
     container_name: shorty
     depends_on:
-      - db
+      - backend_app_db
     ports:
       - "8000:8000"
     networks:
@@ -38,7 +60,7 @@ services:
     links:
       - keycloak
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shorty
+      SPRING_DATASOURCE_URL: jdbc:postgresql://backend_app_db:5432/shorty
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       spring.oauth2.resourceserver.jwt.issuer-uri: http://keycloak:8080/realms/shorty
@@ -48,19 +70,22 @@ services:
     image: shorty-image
     container_name: shorty-test
     depends_on:
-      - db
+      - backend_app_db
     networks:
       - backend
+    links:
+      - keycloak
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shorty
+      SPRING_DATASOURCE_URL: jdbc:postgresql://backend_app_db:5432/shorty
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      spring.oauth2.resourceserver.jwt.issuer-uri: http://keycloak:8080/realms/shorty
     entrypoint: ["mvn", "test", "-f", "pom.xml"]
 
 networks:
   backend:
     driver: bridge
 
-#volumes:
-#  keycloak-db-volume:
-#    external: true
+volumes:
+  keycloak-db-volume:
+    external: true

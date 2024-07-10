@@ -3,7 +3,7 @@
 1. ***otvoriti docker hub, te runnati sljedeće komande kroz konzolu unutar direktorija projekta kako bi se projekt otvorio***
    1.      docker build -t shorty-image .
    2.      docker volume create --name keycloak-db-volume
-   3.      docker-compose up -d db backend_app keycloak
+   3.      docker-compose up -d backend_app_db backend_app keycloak keycloak_db
 
 2. ***Runnanje testova se može odraditi kroz sljedeću komandu:***
    1.      docker-compose run backend_test

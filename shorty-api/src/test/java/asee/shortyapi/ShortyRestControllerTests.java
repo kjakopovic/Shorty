@@ -8,11 +8,15 @@ import asee.shortycore.exceptions.ShortyException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
@@ -58,7 +62,8 @@ public class ShortyRestControllerTests {
             when(shortyService.resolveTheHashedUrl(hash, "RandomUser"))
                     .thenThrow(new ShortyException("There was a mistake in the service!"));
 
-            mvc.perform(get("/123"))
+            mvc.perform(get("/123")
+                            .with(SecurityMockMvcRequestPostProcessors.jwt()))
                     .andExpect(status().isBadRequest());
         } catch (Exception e) {
             throw new RuntimeException(e);
