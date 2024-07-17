@@ -1,10 +1,9 @@
 package asee.shortyapplication.adapters;
 
-import asee.shortyapplication.authentication.dao.IUserDAO;
+import asee.shortyapplication.shorty.dao.IUserDAO;
 import asee.shortycore.models.authentication.UserModel;
 import asee.shortydb.postgres.entities.UserEntity;
 import asee.shortydb.postgres.repositories.IUserRepository;
-import asee.shortydb.postgres.utils.Converters;
 import asee.shortydb.postgres.utils.IConverters;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,6 @@ public class UserDAOAdapter implements IUserDAO {
     private final IConverters converters;
 
     @Override
-    public boolean existsByPassword(String password) {
-        return userRepository.existsByPassword(password);
-    }
-
-    @Override
     public boolean existsById(String accountId) {
         return userRepository.existsById(accountId);
     }
@@ -31,7 +25,9 @@ public class UserDAOAdapter implements IUserDAO {
     public String save(UserModel user) {
         var userEntity = converters.convertUserModelToUserEntity(user);
 
-        userRepository.save(userEntity);
+        if(user.getAccountId() == null || !userRepository.existsById(user.getAccountId())){
+            userRepository.save(userEntity);
+        }
 
         return userEntity.getAccountId();
     }

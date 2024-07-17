@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: shorty-application
+
+jwt:
+  auth:
+    converter:
+      client-id: shorty-rest-api
+      principle-attribute: preferred_username

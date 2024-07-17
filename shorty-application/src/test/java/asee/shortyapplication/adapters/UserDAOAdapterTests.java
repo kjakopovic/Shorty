@@ -1,7 +1,7 @@
 package asee.shortyapplication.adapters;
 
 import asee.shortyapplication.ShortyApplication;
-import asee.shortyapplication.authentication.dao.IUserDAO;
+import asee.shortyapplication.shorty.dao.IUserDAO;
 import asee.shortycore.models.authentication.UserModel;
 import asee.shortydb.postgres.entities.UserEntity;
 import asee.shortydb.postgres.repositories.IUserRepository;
@@ -26,34 +26,6 @@ public class UserDAOAdapterTests {
 
     @MockBean
     private IUserRepository userRepository;
-
-    @Test
-    public void existsByPasswordNoPasswordFound(){
-        //Arrange
-        var password = "Password12_fo3";
-
-        when(userRepository.existsByPassword(password)).thenReturn(true);
-
-        //Act
-        var response = userDAO.existsByPassword("NoPassword213_");
-
-        //Assert
-        Assertions.assertFalse(response);
-    }
-
-    @Test
-    public void existsByPasswordFindsPassword(){
-        //Arrange
-        var password = "Password12_fo3";
-
-        when(userRepository.existsByPassword(password)).thenReturn(true);
-
-        //Act
-        var response = userDAO.existsByPassword(password);
-
-        //Assert
-        Assertions.assertTrue(response);
-    }
 
     @Test
     public void existsByIdFindsAccountId(){
@@ -87,7 +59,6 @@ public class UserDAOAdapterTests {
     public void saveUserSavesCorrectly(){
         //Arrange
         var user = new UserModel();
-        user.setPassword("Password123");
         user.setAccountId("Karlo");
 
         //Act
@@ -111,7 +82,6 @@ public class UserDAOAdapterTests {
     public void findByIdReturnsUserEntity(){
         //Arrange
         var user = new UserEntity();
-        user.setPassword("Password123");
         user.setAccountId("Karlo");
 
         when(userRepository.findById(user.getAccountId())).thenReturn(Optional.of(user));
@@ -121,6 +91,5 @@ public class UserDAOAdapterTests {
 
         //Assert
         Assertions.assertEquals(user.getAccountId(), response.getAccountId());
-        Assertions.assertEquals(user.getPassword(), response.getPassword());
     }
 }

@@ -1,0 +1,34 @@
+server:
+  port: 8000
+
+jwt:
+  auth:
+    converter:
+      client-id: shorty-rest-api
+      principle-attribute: preferred_username
+
+spring:
+  application:
+    name: shorty-api
+  profiles:
+    active: dev
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shorty
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/shorty
+          jwk-set-uri: ${spring.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs

@@ -31,7 +31,6 @@ public class UserShortyRepositoryTests {
     public void setup(){
         var userEntity = new UserEntity();
         userEntity.setAccountId("Karlo");
-        userEntity.setPassword("OPASKFOPDSKJwjeeaifjdos");
 
         userRepository.save(userEntity);
 

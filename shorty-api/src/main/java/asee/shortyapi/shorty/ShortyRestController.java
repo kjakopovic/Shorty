@@ -2,7 +2,7 @@ package asee.shortyapi.shorty;
 
 import asee.shortyapi.shorty.request.ShortyRequest;
 import asee.shortyapi.shorty.response.ShortyResponse;
-import asee.shortyapplication.authentication.interfaces.IAuthenticationService;
+import asee.shortyapplication.shorty.interfaces.IUserService;
 import asee.shortyapplication.shorty.dto.ResolvedHashResponse;
 import asee.shortyapplication.shorty.interfaces.IShortyService;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class ShortyRestController {
     public static final String HTTP_SHORTY_COM = "http://shorty.com/";
 
     private final IShortyService shortyService;
-    private final IAuthenticationService authenticationService;
+    private final IUserService userService;
 
     @PostMapping("/short")
     public ResponseEntity<ShortyResponse> shortenTheUrl(@RequestBody ShortyRequest request) {
@@ -31,7 +31,7 @@ public class ShortyRestController {
             var hashedUrl = shortyService.shortenTheUrl(
                     request.getUrl(),
                     request.getRedirectType(),
-                    authenticationService.getLoggedInUsersAccountId());
+                    userService.getLoggedInUsersAccountId());
 
             response.setShortUrl(HTTP_SHORTY_COM + hashedUrl); //pretpostavka da nam je to domena
 
@@ -45,7 +45,7 @@ public class ShortyRestController {
 
     @GetMapping("/statistics")
     public ResponseEntity<Map<String, Integer>> getUsersStatistics() {
-        String loggedInUserAccountId = authenticationService.getLoggedInUsersAccountId();
+        String loggedInUserAccountId = userService.getLoggedInUsersAccountId();
 
         return ResponseEntity.ok(shortyService.getUsersShortyStatistics(loggedInUserAccountId));
     }
@@ -56,7 +56,7 @@ public class ShortyRestController {
         ResolvedHashResponse serviceResponse;
 
         try{
-            var loggedInUserAccountId = authenticationService.getLoggedInUsersAccountId();
+            var loggedInUserAccountId = userService.getLoggedInUsersAccountId();
 
             serviceResponse =
                     shortyService.resolveTheHashedUrl(hash, loggedInUserAccountId);
